@@ -1,0 +1,60 @@
+/* Navigation ------------------------------- */
+nav{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    text-align: center;
+}
+  
+li {
+    float: left;
+    margin: auto;
+    border-right:1px solid #bbb;
+}
+  
+li:last-child {
+    border-right: none;
+}
+  
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+  
+li a:hover:not(.active) {
+    background-color: #111;
+}
+  
+.active {
+    background-color: #4CAF50;
+}
+/* ------------------------------------------ */
+
+body{
+    background-color: rgb(59, 59, 59);
+}
+header{
+    width: 80%;
+    min-height: 250px;
+    background-color: rgb(126, 245, 245); 
+    margin: auto; 
+}
+main{
+    width: 80%;
+    min-height: 400px;
+    background-color: azure;
+    margin: auto;
+}
+
