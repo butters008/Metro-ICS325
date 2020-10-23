@@ -1,5 +1,34 @@
-table{
+#menu{
     float: left;
     margin-top: 50px;
-    margin-left: 50px;
+    margin-left: 150px;
+    margin-right: auto;
+    background-color: bisque;
+    text-align: center;
+}
+
+#menu td {
+    padding: 10px;
+    width: 150px;
+    height: 125px;
+}
+
+#menu td:hover {
+    background-color: cadetblue;
+}
+
+#howToMakeBox{
+    background-color: aqua;
+    width: 500px;
+    float: right;
+    margin-right: 125px;
+    margin-top: 50px;
+    min-height: 200px;
+    padding: 15px;
+}
+
+.foodIcon{
+    width: 50;
+    height: 50px;
+
 }
