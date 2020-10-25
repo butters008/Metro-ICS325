@@ -53,8 +53,10 @@ header{
 }
 main{
     width: 80%;
-    min-height: 400px;
+    height: 60vh;
+    min-height: 400px; 
     background-color: azure;
     margin: auto;
+    position: relative;
 }
 
