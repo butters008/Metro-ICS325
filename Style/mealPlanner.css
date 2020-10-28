@@ -1,4 +1,5 @@
-nav ul li input[type=text] {
+/* .searchRecipe {position: fixed;} */
+.searchRecipe ul li input[type=text] {
     float: right;
     padding: 6px;
     border: none;
@@ -7,6 +8,7 @@ nav ul li input[type=text] {
     margin-bottom: 8px;
     margin-left: 16px;
     font-size: 17px;
+    
   }
 
 #sort {
@@ -29,8 +31,9 @@ nav ul li input[type=text] {
     background-color: bisque;
     text-align: center;
     position: relative;
-    left: 0;
+    /* left: 0; */
     overflow: auto;
+    width: auto;
 }
 
 #menu table, tbody{
@@ -48,6 +51,7 @@ nav ul li input[type=text] {
 }
 
 #howToMakeBox{
+    border-top: 15px solid black;
     background-color: aqua;
     height: 300px;
     width: 500px;
@@ -81,4 +85,26 @@ nav ul li input[type=text] {
 #list_btn {
     width: 50;
     height: 50px;
+}
+
+.DaysOfWeek{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px, 25xp;
+    /* width: 125px;
+    min-height: 100px; */
+}
+.DaysOfWeek th{
+    margin: auto;
+    width: 125px;
+    min-height: 100px;
+    color: white;
+    background-color: black;
+}
+
+.DaysOfWeek td{
+    margin: auto;
+    width: 125px;
+    height: 100px;
+    background-color: bisque;   
 }

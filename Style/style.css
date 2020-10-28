@@ -40,6 +40,21 @@ li a:hover:not(.active) {
 .active {
     background-color: #4CAF50;
 }
+
+#accountMenu{
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+}
+
+#accountBtn:hover #accountMenu {
+    display: block;
+    /* float: right; */
+  }
 /* ------------------------------------------ */
 
 body{
@@ -47,14 +62,15 @@ body{
 }
 header{
     width: 80%;
-    min-height: 250px;
-    background-color: rgb(126, 245, 245); 
-    margin: auto; 
+    min-height: 200px;
+    /* background-color: rgb(126, 245, 245);  */
+    margin-left: auto;
+    margin-right: auto; 
 }
 main{
     width: 80%;
-    height: 60vh;
-    min-height: 400px; 
+    height: 70vh;
+    min-height: 500px; 
     background-color: azure;
     margin: auto;
     position: relative;
