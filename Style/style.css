@@ -1,6 +1,6 @@
 /* Navigation ------------------------------- */
 nav{
-    width: 80%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
@@ -61,14 +61,14 @@ body{
     background-color: rgb(59, 59, 59);
 }
 header{
-    width: 80%;
+    width: 90%;
     min-height: 200px;
     /* background-color: rgb(126, 245, 245);  */
     margin-left: auto;
     margin-right: auto; 
 }
 main{
-    width: 80%;
+    width: 90%;
     height: 70vh;
     min-height: 500px; 
     background-color: azure;
