@@ -1,15 +1,23 @@
-<?php include "header.php"; ?>
-
 <?php 
-    $foodName1 = "Banana Break";
-    $foodName2 = "Deer Meat Spicy Jerky";
-    $foodName3 = "Spagethi";
-    $foodName4 = "That One thing I can't think of";
-    $foodName5 = "Quick and Easy";
-    $foodName6 = "Names are super confusing!";
+    include "header.php"; 
 ?>
 
-<!-- Chaning this from nav since nav is in header.php file -->
+<?php 
+    class MealForDay {
+        //Properties
+        public nameOfDay;
+        public mealName;
+        public ingredentName;
+
+        function set_nameOfDay($nameOfDay){
+            $this->nameOfDay = $nameOfDay;
+        }
+        function get_nameOfDay(){
+            return $this->nameOfDay;
+        }
+
+    }
+?>
 
 <main>
 <br/><br/>
@@ -58,29 +66,12 @@
                 </li>
                 <li><li><a href='index.php'>Add a Recipe</a></li></li>
             </ul>
-        </div>   
+        </div>
+        
         <table>
             <tbody>
                 <tr>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName1; ?></td>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName2; ?></td>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName3; ?></td>
-                </tr>
-                <tr>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName4; ?></td>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName5; ?></td>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName6; ?></td>
-                </tr>
-                <tr>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName1; ?></td>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName2; ?></td>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName3; ?></td>
-                </tr>
-                <tr>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName4; ?></td>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName5; ?></td>
-                    <td><img class="foodIcon" src="Images/emptyIcon.png" alt=""><br><?php  echo $foodName6; ?></td>
-                </tr>
+
             </tbody>
         </table>
     </div>
@@ -90,9 +81,6 @@
         Cook Time ?? <-Could add this option to the database
         Ingredients
         Instructions
-    </div>
-    <div id="days">
-        
     </div>
 </main>
 
