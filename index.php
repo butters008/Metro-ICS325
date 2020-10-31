@@ -5,9 +5,9 @@
 <?php 
     class MealForDay {
         //Properties
-        public nameOfDay;
-        public mealName;
-        public ingredentName;
+        public $nameOfDay;
+        public $mealName;
+        public $ingredentName;
 
         function set_nameOfDay($nameOfDay){
             $this->nameOfDay = $nameOfDay;
