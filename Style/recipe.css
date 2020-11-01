@@ -1,0 +1,11 @@
+.submitForm{
+    width: 65%;
+    min-height: 100px;
+    background-color: bisque;
+    margin: auto;
+    text-align: center;
+}
+
+#submitTitle{
+    text-align: center;
+}

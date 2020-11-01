@@ -8,6 +8,7 @@ echo"
         <meta charset='utf-8'/>
         <link rel='stylesheet' href='Style/style.css'>
         <link rel='stylesheet' href='Style/mealPlanner.css'>
+        <link rel='stylesheet' href='Style/recipe.css'>
     </head>
     <body>
         <header>
@@ -16,7 +17,7 @@ echo"
         <nav>
             <ul>
                 <li><a href='index.php'>Home</a></li>
-                <li><a href='#cookbook'>Other Page</a></li>
+                <li><a href='addRecipe.php'>Add Recipe</a></li>
                 <li id='accountBtn' style='float: right;'><a href='#account'>Account</a></li>
                     <div id='accountMenu'>
                         <a href=#'>profile</a>
