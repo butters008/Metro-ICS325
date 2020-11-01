@@ -2,7 +2,7 @@
 
 <main>
 <br />
-    <h3 id="submitTitle">Submit a recipe for Cookbook</h3>
+    <h3 id="submitTitle">Update our Recipes</h3>
     <br /><br />
     <section class="submitForm">
     

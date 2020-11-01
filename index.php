@@ -2,68 +2,12 @@
     include "header.php"; 
 ?>
 
-<?php
-    // class Ingredient {
-    //     public $ingredientName;
-    //     public $ingredentAmount;
-
-    //     function set_ingredientName($ingredientName) {
-    //         $this->ingredientName = $ingredientName;
-    //     }
-    //     function get_ingredientName(){
-    //         return $this->$ingredientName;
-    //     }
-    // }
-
-    class Recipe {
-        //Properties
-        public $mealName;
-        public $instruction;
-        public $ingredientName;
-        public $ingredentAmount;
-
-        //Constuctors
-        function set_mealName($mealName){
-            $this->mealName = $mealName;
-        }
-        function get_mealName(){
-            return $this->mealName;
-        }
-        function set_ingredientName($ingredientName) {
-            $this->ingredientName = $ingredientName;
-        }
-        function get_ingredientName(){
-            return $this->$ingredientName;
-        }
-        function set_ingredientAmount($ingredientAmount) {
-            $this->ingredientAmount = $ingredientAmount;
-        }
-        function get_ingredientAmount(){
-            return $this->$ingredientAmount;
-        }
-        function set_instruction($instruction){
-            $this->instruction = $instruction;
-        }
-        function get_instruction(){
-            return $this->instruction;
-        }
-    }
-
-    //Creating the objects
-    $meal1 = new Recipe();
-    $meal2 = new Recipe();
-    $meal3 = new Recipe();
-    $meal4 = new Recipe();
-    $meal5 = new Recipe();
-    $meal6 = new Recipe();
-    $meal7 = new Recipe();
-?>
 
 <main>
 <br/><br/>
     <div>
         <form method="POST" action="list.php">
-                <!--I think we can set these dynamically based on the selected image above. Need to dig a bit more on how to do that with the image selector-->
+                <!--TODO: I think we can set these dynamically based on the selected image below. Need to dig a bit more on how to do that with the image selector once we are pulling them from the DB-->
             <table  class="DaysOfWeek">
                 <tbody>
                     <tr>
@@ -86,35 +30,35 @@
                     </tr>
                 </tbody>
             </table><br/>
-            <center> <!-- TODO: Going to have to change, just doing this for right now -->
-            <input style="margin: auto;" type="submit" id="list_btn" value="Print Current List">
+            <center>
+                <input type="submit" id="list_btn" value="Get Shopping List">
             </center>
         </form>
     </div>
 
 
 
-    <div class="menu"> <!-- This will eventually need to be some kind of image selector. https://rvera.github.io/image-picker/ Limit Multiple Selects -->
+    <div class="menu"> <!-- TODO: This will eventually need to be some kind of image selector. https://rvera.github.io/image-picker/ Limit Multiple Selects -->
         <div id="howToMakeBox">
-            this should be working! Can we add an edit button within the recipe?
-            Recipe Name
-            Cook Time ?? <-Could add this option to the database
-            Ingredients
-            Instructions
+            <input type="button" id="add_btn" value="Add to List">   
+            <p>Placeholder for recipe name</p>
+            <p>Placeholder for recipe ingredients</p>
+            <p>Placeholder for recipe instructions</p>
+            <a href='addRecipe.php'>Edit Recipe</a>
+
         </div>  
         <div class="searchRecipe">
             <ul>
-                <li><input type="text" placeholder="Search.."></li>
+                <li><input type="text" placeholder="Search.."></li>  <!--TODO: On submit this should search for recipes by name/ingredient-->
                 <li>    
                     <select name="sort" id="sort">
                         <option value="" disabled selected>Sort by...</option>
                         <option value="recipe_name">Recipe</option>
+                        <option value="cook_time">Time to Cook</option>
                         <option value="date_added">Date Added</option>
-                        <option value="ingredient_count">Fewer Ingredients</option>
+                        <option value="ingredient_count">Less Ingredients</option>
                     </select>
                 </li>
-                <li><a href='index.php'>Search</a></li>
-                <li><a href='index.php'>Add to List</a></li>
             </ul>
         </div>
         

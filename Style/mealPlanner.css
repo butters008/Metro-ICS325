@@ -76,6 +76,8 @@
 #list_btn {
     width: 50;
     height: 50px;
+    margin: auto;
+    align-items: center;
 }
 
 .DaysOfWeek{
