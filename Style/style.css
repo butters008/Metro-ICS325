@@ -7,7 +7,7 @@ nav{
     /* height: 50px; */
 }
 
-ul {
+nav ul {
     
     list-style-type: none;
     margin: 0;
@@ -17,17 +17,17 @@ ul {
     text-align: center;
 }
   
-li {
+nav li {
     float: left;
     margin: auto;
     border-right:1px solid #bbb;
 }
   
-li:last-child {
+nav li:last-child {
     border-right: none;
 }
   
-li a {
+nav li a {
     display: block;
     color: white;
     text-align: center;
@@ -35,7 +35,7 @@ li a {
     text-decoration: none;
 }
   
-li a:hover:not(.active) {
+nav li a:hover:not(.active) {
     background-color: #111;
 }
   
