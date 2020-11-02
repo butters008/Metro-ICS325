@@ -14,6 +14,7 @@ echo"
             body{ font: 14px sans-serif; }
             .wrapper{ width: 350px; padding: 20px; }
         </style>
+        <script src=\"https://code.jquery.com/jquery-3.5.0.js\"></script>
     </head>
     <body>
         <header>

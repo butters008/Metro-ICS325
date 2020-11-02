@@ -65,44 +65,7 @@
     //     }
     // }
 
-    class Recipe {
-        //Properties
-        public $mealName;
-        public $instruction;
-        public $ingredientName;
-        public $ingredientAmount;
-
-        //Constuctors
-        function set_mealName($mealName){
-            $this->mealName = $mealName;
-        }
-        function get_mealName(){
-            return $this->mealName;
-        }
-        function set_ingredientName($ingredientName) {
-            $this->ingredientName = $ingredientName;
-        }
-        function get_ingredientName(){
-            if (isset($ingredientName)){
-                return $this->$ingredientName;
-            }
-        }
-        function set_ingredientAmount($ingredientAmount) {
-            $this->ingredientAmount = $ingredientAmount;
-        }
-        function get_ingredientAmount(){
-            if (isset($ingredientAmount)){
-                return $this->$ingredientAmount;
-            }
-        }
-        function set_instruction($instruction){
-            $this->instruction = $instruction;
-        }
-        function get_instruction(){
-            return $this->instruction;
-        }
-    }
-
+    
     //Creating the objects
     $meal1 = new Recipe();
     $meal2 = new Recipe();

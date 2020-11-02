@@ -48,7 +48,8 @@
     text-align: center;
     position: relative;
     /* left: 0; */
-    overflow: auto;
+    overflow-x: hidden; 
+    overflow-y: auto; 
     width: 80%;
 }
 
@@ -82,8 +83,8 @@
 }
 
 .foodIcon{
-    width: 50;
-    height: 50px;
+    width: 100px;
+    height: 100px;
 
 }
 
@@ -117,3 +118,46 @@
     height: 100px;
     background-color: bisque;   
 }
+
+/* Image gallery*/
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 4px;
+    overflow-x: hidden; 
+    overflow-y: auto; 
+    width: 60%; 
+  }
+  
+  /* Create four equal columns that sits next to each other */
+  .column {
+    float: left;
+    flex: 25%;
+    max-width: 25%;
+    padding: 0 4px;
+  }
+  
+  .column img {
+    margin-top: 8px;
+    vertical-align: middle;
+    width: 100px;
+    height: 100px;
+  }
+  
+  /* Responsive layout - makes a two column-layout instead of four columns */
+  @media screen and (max-width: 800px) {
+    .column {
+      float: left;
+      flex: 50%;
+      max-width: 50%;
+    }
+  }
+  
+  /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 600px) {
+    .column {
+      float: left;
+      flex: 100%;
+      max-width: 100%;
+    }
+  }
