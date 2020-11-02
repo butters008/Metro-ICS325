@@ -185,7 +185,7 @@
             <?php
                 if(isset($currentRecipe))
             ?>
-            <a href='addRecipe.php'>Edit Recipe</a>
+            <a href='modifyRecipe.php'>Edit Recipe</a>
 
         </div>  
         <div class="searchRecipe">
