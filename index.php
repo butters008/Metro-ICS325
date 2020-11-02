@@ -44,7 +44,7 @@
             <p>Placeholder for recipe name</p>
             <p>Placeholder for recipe ingredients</p>
             <p>Placeholder for recipe instructions</p>
-            <a href='recipe.php'>Edit Recipe</a>
+            <a href='modifyRecipe.php'>Edit Recipe</a>
 
         </div>  
         <div class="searchRecipe">

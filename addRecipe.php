@@ -1,5 +1,10 @@
 <?php include "header.php"; ?>
 
+
+<?php 
+//including this for now, but will modify and continue working when we upload to server
+?>
+
 <main>
 <br />
     <div id="choose">
