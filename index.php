@@ -11,6 +11,7 @@
     $recipe5 = new Recipe();
     $recipe6 = new Recipe();
     $recipe7 = new Recipe();
+    
 
     if(isset($_POST['current'])) {
         $searchedValue = $_POST['current'];
@@ -88,6 +89,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script>
     //   TODO set up database calls to pull update recipe info
+    var instructions = new Map();
+
     function nextSpot() {
         if( typeof nextSpot.counter == 'undefined' || nextSpot.counter > 6 ) {
             nextSpot.counter = 1;
@@ -97,9 +100,15 @@
         return nextSpot.counter.toString();
     }
     function updateRecipe(id){
-        document.getElementById('current').value = id;
-        document.getElementById('howToMakeBox')
+        var current = document.getElementById('current');
+        if(current.value == null || current.value == ""){
+            document.getElementById('add_btn').hidden = false;
+            document.getElementById('edit_link').hidden = false;
+        }
+        current.value = id;
+        document.getElementById('recipeInfo').innerHTML = instructions.get(id);
     }
+
     function addToList(){
         var number = nextSpot();
         var id = ["one","two","three","four","five","six","seven"];
@@ -109,29 +118,13 @@
         spot = document.getElementById(img);
         spot.src = document.getElementById(currentID.toString()).src;
         spot.hidden = false;
-
-        //ajax_call();
-
     }
-    // I was hoping to get this to work with the mock data but it may be easier with the database call
-    function ajax_call(){
-        cur = document.getElementById('current').value;
-        _1 = document.getElementById('one').value;
-        _2 = document.getElementById('two').value;
-        _3 = document.getElementById('three').value;
-        _4 = document.getElementById('four').value;
-        _5 = document.getElementById('five').value;
-        _6 = document.getElementById('six').value;
-        _7 = document.getElementById('seven').value;
-        $.ajax({
-            type:'post',
-            data:{current:cur, one:_1,two:_2,three:_3,four:_4, five:_5, six:_6, seven:_7}
-        });
-        // location.reload();
+
+    function storeInstruction(key, value){
+        instructions.set(key.toString(), value);
     }
+
   </script>
-
-</script>
 <main>
 <br/><br/>
     <div>
@@ -177,15 +170,9 @@
 
     <div class="menu"> <!-- TODO: This will eventually need to be some kind of image selector. https://rvera.github.io/image-picker/ Limit Multiple Selects -->
         <div id="howToMakeBox">
-            <input type="button" id="add_btn" value="Add to List" onclick="addToList()">
-            <p id="name">Placeholder for recipe name</p>
-            <p id="cookTime">Placeholder for cook time</p>
-            <p id="ingredients">Placeholder for recipe ingredients</p>
-            <p id="instructions">Placeholder for recipe instructions</p>
-            <?php
-                if(isset($currentRecipe))
-            ?>
-            <a href='modifyRecipe.php'>Edit Recipe</a>
+            <input type="button" id="add_btn" value="Add to List" onclick="addToList()" hidden=true>
+            <div id="recipeInfo">Click a recipe to see more info here</div>
+            <a id="edit_link" href='modifyRecipe.php' hidden=true>Edit Recipe</a>
 
         </div>  
         <div class="searchRecipe">
@@ -224,7 +211,9 @@
                     if($recipeIndex < $recipeCount){
                         $recipe = $mockRecipeList[$recipeIndex];
                         $image = $recipe->imageURL;
+                        $instructions = " ".$recipe->displayRecipe()." ";
                         echo("<img class=\"foodIcon,recipeImg\" id=".$recipe->id." src=".$image." onclick=\"updateRecipe(this.id)\">");
+                        echo("<script>storeInstruction(".$recipe->id.",\"".$instructions."\")</script>");
                         $recipeIndex++;
                     }
                 }

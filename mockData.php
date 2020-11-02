@@ -1,5 +1,4 @@
 <?php
-    include "ingredient.php";
     include "recipe.php";
 $mockRecipeList = array();
 $mockIngredientList = array();
@@ -52,7 +51,7 @@ for($index=0; $index <19; $index++){
     $recipe->id=$mockRecipeData[$index][0];
     $recipe->name=$mockRecipeData[$index][1];
     $recipe->instruction=$mockRecipeData[$index][2];
-    $recipe->ingredientList=$mockIngredientList;
+    $recipe->set_ingredientList($mockIngredientList);
     $recipe->cookTime=$mockRecipeData[$index][3];
     $recipe->imageURL="Images/emptyIcon.png";
     array_push($mockRecipeList, $recipe);

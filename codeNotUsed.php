@@ -74,4 +74,22 @@
     $meal5 = new Recipe();
     $meal6 = new Recipe();
     $meal7 = new Recipe();
-?>
+
+
+// I was hoping to get this to work with the mock data but it may be easier with the database call
+    // function ajax_call(){
+    //     cur = document.getElementById('current').value;
+    //     _1 = document.getElementById('one').value;
+    //     _2 = document.getElementById('two').value;
+    //     _3 = document.getElementById('three').value;
+    //     _4 = document.getElementById('four').value;
+    //     _5 = document.getElementById('five').value;
+    //     _6 = document.getElementById('six').value;
+    //     _7 = document.getElementById('seven').value;
+    //     $.ajax({
+    //         type:'post',
+    //         data:{current:cur, one:_1,two:_2,three:_3,four:_4, five:_5, six:_6, seven:_7}
+    //     });
+    //     // location.reload();
+    // }
+    ?>

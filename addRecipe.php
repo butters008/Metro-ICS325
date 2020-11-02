@@ -24,32 +24,4 @@
                 name, description, assigned 1 of three icons that user previous choosen -->
             <label for="recipeName">Name of Recipe:</label><br>
             <input type="text" id="recipeName" name="recipeName"><br><br>
-
-        //Methods
-
-        function displayCookTime(){
-            if ($this->cookTime < 60) {
-                return "$this->cookTime minutes";
-            } else {
-                $hours = $this->cookTime/60;
-                $minutes = $this->cookTime%60;
-                return "$hours hours $minutes minutes";
-            }
-        }
-
-        function displayIngredients(){
-            if(isset($ingredientList)){
-                foreach($ingredientList as $ingredient){
-                    echo("\t$ingredient->qty $ingredientList->measurement $ingredient->name");
-                }
-            }
-        }
-
-        public function displayRecipe(){
-            echo("Recipe: ".$this->name);
-            echo("Cook Time: ".$this->displayCookTime());
-            echo("Ingredients:");
-            $this->displayIngredients();    
-        }
-    }
 ?>

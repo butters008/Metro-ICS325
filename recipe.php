@@ -1,10 +1,12 @@
 <?php
+require_once "ingredient.php";
+
 class Recipe {
         //Properties
         public $id;
         public $name;
         public $instruction;
-        public $ingredientList;
+        public $ingredientList = array();
         public $cookTime;
         public $imageURL;
 
@@ -21,10 +23,10 @@ class Recipe {
         function get_name(){
             return $this->name;
         }
-        function set_ingredientName($ingredientName) {
-            $this->ingredientName = $ingredientName;
+        function set_ingredientList($ingredientList) {
+            $this->ingredientList = $ingredientList;
         }
-        function get_ingredientName(){
+        function get_ingredientList(){
             return $this->name;  
         }
         function set_cookTime($cookTime) {
@@ -52,25 +54,26 @@ class Recipe {
             if ($this->cookTime < 60) {
                 return "$this->cookTime minutes";
             } else {
-                $hours = $this->cookTime/60;
+                $hours = intdiv($this->cookTime,60);
                 $minutes = $this->cookTime%60;
                 return "$hours hours $minutes minutes";
             }
         }
 
-        function displayIngredients(){
-            if(isset($ingredientList)){
-                foreach($ingredientList as $ingredient){
-                    echo("\t$ingredient->qty $ingredientList->measurement $ingredient->name");
-                }
+        public function displayIngredients(){
+            $output = "<ui>";
+            foreach($this->ingredientList as $ing){
+                $output = $output."<li>".$ing->qty." ".$ing->measurement." ".$ing->name."</li>";
             }
+            $output = $output."</ul>";
+            return $output;
+            
         }
 
         public function displayRecipe(){
-            echo("Recipe: ".$this->name);
-            echo("Cook Time: ".$this->displayCookTime());
-            echo("Ingredients:");
-            $this->displayIngredients();    
+            $output = "<h3>Recipe: ".$this->name."</h3>"."<p>Cook Time: ".$this->displayCookTime()."</p>"."<p>Instructions: ".$this->instruction."</p>"."<p>Ingredients: </p>".$this->displayIngredients();   
+            return $output; 
         }
+
     }
 ?>

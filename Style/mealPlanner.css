@@ -82,6 +82,10 @@
     right: 0;
 }
 
+#recipeInfo p, ul, li {
+    text-align: left;
+}
+
 .foodIcon{
     width: 100px;
     height: 100px;
