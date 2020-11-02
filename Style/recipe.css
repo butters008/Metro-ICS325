@@ -9,3 +9,52 @@
 #submitTitle{
     text-align: center;
 }
+
+#ingredientTable{
+    margin: auto;
+    /* background-color: azure; */
+}
+
+#choose{
+    width: 14%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    /* height: 50px; */
+}
+
+#choose ul {
+    
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    text-align: center;
+}
+  
+#choose li {
+    /* float: left; */
+    margin: auto;
+    border-right:1px solid #bbb;
+}
+  
+#choose li:last-child {
+    border-right: none;
+}
+  
+#choose li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+  
+#choose li a:hover:not(.active) {
+    background-color: #111;
+}
+  
+.active {
+    background-color: #4CAF50;
+}
