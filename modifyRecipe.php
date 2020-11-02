@@ -4,8 +4,8 @@
 <br />
     <div id="choose">
         <ul>
-            <li><a href="recipe.php" class="active">Add Recipe</a></li>
-            <li><a href="modifyRecipe.php">Modify Recipe</a></li>
+            <li><a href="recipe.php">Add Recipe</a></li>
+            <li><a href="modifyRecipe.php" class="active">Modify Recipe</a></li>
         </ul>
     </div>
     

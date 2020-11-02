@@ -61,6 +61,7 @@ li a:hover:not(.active) {
 
 body{
     background-color: rgb(59, 59, 59);
+    margin-bottom: 20px;
 }
 header{
     width: 90%;
@@ -71,7 +72,7 @@ header{
 }
 main{
     width: 90%;
-    height: 70vh;
+    min-height: 70%;
     min-height: 500px; 
     background-color: azure;
     margin: auto;
