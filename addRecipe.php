@@ -1,7 +1,4 @@
-
-<?php 
-//including this for now, but will modify and continue working when we upload to server
-?>
+<?php include "header.php"; ?>
 
 <main>
 <br />
@@ -25,31 +22,45 @@
             <label for="recipeName">Name of Recipe:</label><br>
             <input type="text" id="recipeName" name="recipeName"><br><br>
 
-        //Methods
+            <label for="cookTime">Cooking Time for Recipe:</label><br>
+            <input type="text" id="cookTime" name="cookTime"><br><br>
 
-        function displayCookTime(){
-            if ($this->cookTime < 60) {
-                return "$this->cookTime minutes";
-            } else {
-                $hours = $this->cookTime/60;
-                $minutes = $this->cookTime%60;
-                return "$hours hours $minutes minutes";
-            }
-        }
+            <label for="recipeDescription">Description of Recipe:</label><br>
+            <input type="text" id="recipeDescription" name="recipeDescription"><br><br>
 
-        function displayIngredients(){
-            if(isset($ingredientList)){
-                foreach($ingredientList as $ingredient){
-                    echo("\t$ingredient->qty $ingredientList->measurement $ingredient->name");
-                }
-            }
-        }
+            <!-- Adding ingredents to recipe, making this an array or table 
+            Example taken from: https://www.youtube.com/watch?v=qYbkQpSI9_o -->
+            <table id="ingredientTable">
+                <thead>
+                    <tr>
+                        <th>Ingredent Name: </th>
+                        <th>Amount: </th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+            
+            <p><button type="button" onclick="addItem();">Add Item</button></p>
+            <!-- This is where we tell them to make the instructions as to how to make the recipe
+            Thinking that this will output to a text file, than we store this locally on the page 
+            For now localhost/server, but once we get further developed, we store on website server            
+            REASON: We take the textfile and load onto instruction on main page with correct formatting (I believe) -->
+            <label for="ingredientInstuction"><strong>Instructions for Recipe:</strong></label><br/>
+            <textarea id="ingredientInstuction" name="ingredientInstuction" rows="15" cols="50"></textarea>
+            <p><input type="submit" value="submit" name="submit"></p><br/><br/>
+        </form>
+    </section>
 
-        public function displayRecipe(){
-            echo("Recipe: ".$this->name);
-            echo("Cook Time: ".$this->displayCookTime());
-            echo("Ingredients:");
-            $this->displayIngredients();    
-        }
+    <br /><br />
+</main>
+<script>
+    function addItem(){
+        var html = "<tr>";
+            html += "<td><input name='ingredentName[]'></td>";
+            html += "<td><input name='ingredentAmount[]'></td>";
+            html += "</tr>";
+
+            document.getElementById("tbody").insertRow().innerHTML = html;
     }
-?>
+</script>
+<?php include "footer.php"; ?>
