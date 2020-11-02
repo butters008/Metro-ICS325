@@ -53,10 +53,10 @@
                 <li>    
                     <select name="sort" id="sort">
                         <option value="" disabled selected>Sort by...</option>
-                        <option value="recipe_name">Recipe</option>
+                        <option value="recipe_name">Name</option>
                         <option value="cook_time">Time to Cook</option>
                         <option value="date_added">Date Added</option>
-                        <option value="ingredient_count">Less Ingredients</option>
+                        <option value="ingredient_count">Total Ingredients</option>
                     </select>
                 </li>
             </ul>

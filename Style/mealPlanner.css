@@ -8,8 +8,23 @@
     margin-bottom: 8px;
     margin-left: 16px;
     font-size: 17px;
+}
+
+.searchRecipe ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    text-align: center;
+}
+
+.searchRecipe ul li {
+    float: left;
+    margin: auto;
+    border-right:1px solid #bbb;
+}
     
-  }
 
 #sort {
     float: right;
@@ -93,6 +108,7 @@
     min-height: 100px;
     color: white;
     background-color: black;
+    text-align: center;
 }
 
 .DaysOfWeek td{

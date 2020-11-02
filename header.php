@@ -9,6 +9,11 @@ echo"
         <link rel='stylesheet' href='Style/style.css'>
         <link rel='stylesheet' href='Style/mealPlanner.css'>
         <link rel='stylesheet' href='Style/recipe.css'>
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css'>
+        <style type=\"text/css\">
+            body{ font: 14px sans-serif; }
+            .wrapper{ width: 350px; padding: 20px; }
+        </style>
     </head>
     <body>
         <header>
@@ -17,11 +22,9 @@ echo"
         <nav>
             <ul>
                 <li><a href='index.php'>Home</a></li>
-                <li><a href='recipe.php'>Add a Recipe</a></li>
-                <li id='accountBtn' style='float: right;'><a href='#account'>Account</a></li>
-                    <div id='accountMenu'>
-                        <a href=#'>profile</a>
-                    </div>
+
+                <li><a href='addRecipe.php'>Add a Recipe</a></li>
+                <li id='accountBtn' style='float: right;'><a href='profile.php'>My Profile</a></li>
             </ul>
         </nav>";
 
