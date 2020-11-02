@@ -4,7 +4,7 @@
 <br />
     <div id="choose">
         <ul>
-            <li><a href="recipe.php">Add Recipe</a></li>
+            <li><a href="addRecipe.php">Add Recipe</a></li>
             <li><a href="modifyRecipe.php" class="active">Modify Recipe</a></li>
         </ul>
     </div>
