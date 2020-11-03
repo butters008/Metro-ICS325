@@ -27,7 +27,7 @@ class Recipe {
             $this->ingredientList = $ingredientList;
         }
         function get_ingredientList(){
-            return $this->name;  
+            return $this->ingredientList;  
         }
         function set_cookTime($cookTime) {
             $this->cookTime = $cookTime;

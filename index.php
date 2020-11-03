@@ -69,6 +69,7 @@
     } else {
         $recipe7 = null;
     }
+    
     $selected = array($recipe1, $recipe2, $recipe3, $recipe4, $recipe5, $recipe6, $recipe7);
 
     function filter_by_value ($array, $index, $value){
@@ -123,6 +124,9 @@
     function storeInstruction(key, value){
         instructions.set(key.toString(), value);
     }
+    // TODO Once database is set up, create a function that reloads the window to get updated POST data
+    // TODO Add function that searches the given list (Ajax onKeyChange in the search box -> compare to current recipe list name, ingredients)
+    // TODO Add function that sort the list based on given criteria (Ajax onStateChange in dropdown -> make database call to update the list order)
 
   </script>
 <main>
