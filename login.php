@@ -5,8 +5,6 @@
 // Initialize the session
 session_start();
 
-// TODO remove once authentication is in place
-$_SESSION["loggedin"] = false;
 
 //Check if the user is already logged in, if yes then redirect him to home page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -41,7 +39,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate credentials
     if(empty($email_err) && empty($password_err)){
         // Prepare a select statement
-        $sql = "SELECT id, email, password FROM users WHERE email = ?";
+        $sql = "SELECT user_email, pw FROM user WHERE user_email = ?";
         
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
@@ -66,8 +64,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             
                             // Store data in session variables
                             $_SESSION["loggedin"] = true;
-                            $_SESSION["id"] = $id;
-                            $_SESSION["email"] = $email;                            
+                            $_SESSION["user_email"] = $email;                            
                             
                             // Redirect user to home page
                             header("location: index.php");

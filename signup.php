@@ -20,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $email_err = "Please enter a valid email.";
     } else{
      // Prepare a select statement
-        $sql = "SELECT user_email FROM user WHERE email = ?";
+        $sql = "SELECT user_email FROM user WHERE user_email = ?";
         
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
