@@ -10,8 +10,7 @@ recipe_image_url varchar(25)
 
 Create table User(
 user_email varchar(25) Primary key,
-username varchar(25),
-pw varchar(25) 
+pw varchar(100) 
 );
 Create table Shopping_List(
 shopping_list_id Int Primary key,
