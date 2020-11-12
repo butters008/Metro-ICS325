@@ -10,7 +10,7 @@ https://mnscu-my.sharepoint.com/:u:/r/personal/ra7510qo_go_minnstate_edu/Documen
 
 TODO:
     New File:
-        1. Write the SQL statements to create the tables/keys based on the existing database schema
+        ~~1. Write the SQL statements to create the tables/keys based on the existing database schema~~
     index.php
         2. Figure out what SQL statements are needed to make calls to load the recipe data and filter/sort
         3. Remove mock data
@@ -26,8 +26,8 @@ TODO:
         9. Figure out how to display the ingredients after the DB call
         10. Find a way to combine ingredients to avoid duplicates
     login.php
-        11. Hook up database.
-        12. Convert variable names in SQL to match our tables
+        ~~11. Hook up database.~~
+        ~~12. Convert variable names in SQL to match our tables~~
     logout.php
 
     mockData.php
@@ -39,18 +39,18 @@ TODO:
         17. Add recipe pictures and data
     profile.php
         18. Hook up database.
-        19. Convert variable names in SQL to match our tables
+        19. Show shopping list data
     recipe.php
         20. Figure out SQL statements for CREATE and UPDATE - Do we want a recipeCollection file like the ingredient collection
     resetpassword.php
-        21. Hook up database.
-        22. Convert variable names in SQL to match our tables
+        ~~21. Hook up database.~~
+        ~~22. Convert variable names in SQL to match our tables~~
     shoppingList.php
-        23. Add db connections
-        24. Figure out SQL statements
+        23. Add db connection and SQL statements
+        24. Display shopping list dates in a link from DB query results
     signup.php
-        25. Hook up database.
-        26. Convert variable names in SQL to match our tables
+        ~~25. Hook up database.~~
+        ~~26. Convert variable names in SQL to match our tables~~
     user.php
         27. Verify that all the dB calls are handled in the login/signup/resetpassword/profile pages
     
