@@ -1,6 +1,7 @@
 
 // INDEX FUNCTIONS
 var instructions = new Array();
+
 function nextSpot() {
     if( typeof nextSpot.counter == 'undefined' || nextSpot.counter > 6 ) {
         nextSpot.counter = 1;
@@ -30,6 +31,17 @@ function addToList(){
     spot.hidden = false;
 }
 
+function setSort(){
+    $sort = document.getElementById('sort').value
+    document.cookie = "sort="+$sort;
+    if($sort == 'r.ingredient_count'){
+        document.cookie = "direction=DESC";
+    } else {
+        document.cookie = "direction=ASC";
+    }
+
+    $('#gallery').load('index.php #gallery');
+}
 function storeInstruction(key, value){
     instructions.push(key.toString(), value);
 }

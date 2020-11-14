@@ -15,7 +15,7 @@ TODO:
         2. Figure out what SQL statements are needed to make calls to load the recipe data and filter/sort
         ~~3. Remove mock data~~
         ~~4. Refactor based on using database calls instead of mock data~~
-        5. Verify images work on server
+        ~~5. Verify images work on server~~
     ingredient.php
         6. Write functions to convert measurements so shopping list can combine ingredients
     ingredientCollection.php

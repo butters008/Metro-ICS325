@@ -5,7 +5,8 @@ recipe_id Int Primary key AUTO_INCREMENT,
 recipe_name varchar(25),
 cook_time Int,
 recipe_instructions text,
-recipe_image_url varchar(25)
+recipe_image_url varchar(25),
+ingredient_count Int
 );
 
 Create table User(
@@ -41,3 +42,8 @@ foreign key (recipe_id) references Recipe(recipe_id),
 foreign key (ingredient_name) references Ingredient(ingredient_name),
 foreign key(measurement_type) references Measurement(measurement_type)
 );
+
+CREATE TRIGGER `getIngredientCount` 
+AFTER INSERT ON `recipe_ingredient` 
+FOR EACH ROW UPDATE recipe 
+SET ingredient_count = (SELECT COUNT(*) FROM recipe_ingredient WHERE recipe_id = recipe.recipe_id);

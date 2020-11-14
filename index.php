@@ -17,7 +17,7 @@ require_once "ingredient.php";
     $recipe5 = new Recipe();
     $recipe6 = new Recipe();
     $recipe7 = new Recipe();
-
+    
 
     if (isset($_POST['current'])) {
         $searchedValue = $_POST['current'];
@@ -149,39 +149,55 @@ require_once "ingredient.php";
                 <li><input type="text" placeholder="Search.."></li>
                 <!--TODO: On submit this should search for recipes by name/ingredient-->
                 <li>
-                    <select name="sort" id="sort">
+                    <select name="sort" id="sort" onchange="setSort(this.value)">
                         <option value="" disabled selected>Sort by...</option>
-                        <option value="recipe_name">Name</option>
-                        <option value="cook_time">Time to Cook</option>
-                        <option value="date_added">Date Added</option>
-                        <option value="ingredient_count">Total Ingredients</option>
+                        <option value="r.recipe_name">Name</option>
+                        <option value="r.cook_time">Time to Cook</option>
+                        <option value="r.recipe_id">Newest</option>
+                        <option value="r.ingredient_count">Fewer Ingredients</option>
                     </select>
                 </li>
             </ul>
         </div>
-        <form method="POST" action>
-            <div class="row">
+        <form  method="POST" action>
+            <div id="gallery" class="row">
                 <?php
-                // Check the
+
+                if (isset($_COOKIE['sort'])) {
+                    $sort=$_COOKIE['sort'];
+                } else {
+                    $sort = 'r.recipe_name';
+                    }
+                
+                if(isset($_COOKIE['direction'])){
+                    $ascOrDesc = $_COOKIE['direction'];
+                } else {
+                    $ascOrDesc = 'ASC';
+                }
+                
+
+                // Check the connection
                 if (mysqli_connect_errno()) {
                     printf("Connect failed: %s\n", mysqli_connect_error());
                     exit();
                 }
 
                 // SQL Query
-                $sql = 'SELECT r.recipe_id, r.recipe_name, r.cook_time, r.recipe_instructions, r.recipe_image_url,
+                $sql = 'SELECT r.recipe_id, r.recipe_name, r.cook_time, r.recipe_instructions, r.recipe_image_url, r.ingredient_count,
                 i.recipe_id, i.ingredient_name, i.measurement_type, i.measurement_qty
                 FROM recipe as r
                 JOIN recipe_ingredient as i ON i.recipe_id = r.recipe_id
-                ORDER BY ?';  // leaving this should allow for sorting later
+                ORDER BY '.$sort;
+                //.' '.$ascOrDesc;  
+
                 // Prepare the statement
                 $stmt = mysqli_prepare($link, $sql);
-                // Bind the parameters
-                mysqli_stmt_bind_param($stmt, 's', $recipeName);
+                
                 //Execute the statement
                 mysqli_stmt_execute($stmt);
+                
                 // Bind the results
-                mysqli_stmt_bind_result($stmt, $rID, $rName, $rCookTime, $rInstructions, $rImage, $iID, $iName, $iMeasureType, $iQty);
+                mysqli_stmt_bind_result($stmt, $rID, $rName, $rCookTime, $rInstructions, $rImage, $ringredientCount, $iID, $iName, $iMeasureType, $iQty);
                 $recipeCollection = new Collection();
                 $recipe = new Recipe;
                 $lastRowRecipe = null;
@@ -209,6 +225,7 @@ require_once "ingredient.php";
                         } else {
                             // This is a new recipe. We need to add the old recipe data to the collection now that all the ingredients are added
                             $recipeCollection->addItem($wRecipe, $wRecipe->get_id());
+                    
                             // Set the current working recipe to the recipe in this row
                             $wRecipe = $thisRowRecipe;
                             $wRecipe->addIngredient($ingredient);
@@ -228,6 +245,7 @@ require_once "ingredient.php";
                 // Close DB connection
                 $stmt->close();
                 $link->close();
+                
 
 
                 // Create an image gallery with 4 columns (responsive to 2 with css)

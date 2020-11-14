@@ -9,6 +9,8 @@ class Recipe {
         public $ingredientList = array();
         public $cookTime;
         public $imageURL;
+        public $ingredientCount;
+
 
         //Getter/Setter
         function set_id($id){
@@ -47,7 +49,12 @@ class Recipe {
         function get_imageURL(){
             return $this->imageURL;
         }
-
+        function set_ingredientCount($ingredientCount){
+            $this->ingredientCount = $ingredientCount;
+        }
+        function get_ingredientCount(){
+            return $this->ingredientCount;
+        }
         //Methods
 
         function displayCookTime(){
@@ -75,7 +82,7 @@ class Recipe {
         }
 
         public function addIngredient($ingredient){
-            array_push($this->ingredientList, $ingredient);   
+            array_push($this->ingredientList, $ingredient); 
         }
 
     }

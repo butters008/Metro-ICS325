@@ -137,7 +137,7 @@
   .column {
     float: left;
     flex: 25%;
-    max-width: 25%;
+    max-width: 120px;
     padding: 0 4px;
   }
   
