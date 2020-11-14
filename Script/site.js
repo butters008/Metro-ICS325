@@ -34,10 +34,10 @@ function addToList(){
 function setSort(){
     $sort = document.getElementById('sort').value
     document.cookie = "sort="+$sort;
-    if($sort == 'r.ingredient_count'){
-        document.cookie = "direction=ASC";
-    } else {
+    if($sort == 'r.recipe_id'){
         document.cookie = "direction=DESC";
+    } else {
+        document.cookie = "direction=ASC";
     }
 
     $('#gallery').load('index.php #gallery');
