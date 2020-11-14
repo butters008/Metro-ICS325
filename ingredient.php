@@ -2,14 +2,28 @@
 
 class Ingredient {
     //Properties
-    public $id;
     public $name;
     public $qty;
     public $measurement;
 
     //Getter/Setter
+    function set_name($name){
+        $this->name = $name;
+    }
+    function get_name(){
+        return $this->name;
+    }
     function set_qty($qty) {
         $this->qty = $qty;
+    }
+    function get_qty(){
+        return $this->qty;
+    }
+    function set_measurement($measurement){
+        $this->measurement = $measurement;
+    }
+    function get_measurement(){
+        return $this->measurement;
     }
 
     //Methods
@@ -17,7 +31,6 @@ class Ingredient {
     public function combine($other){
         if($this->measurement == $other->measurement){
             $new = new Ingredient();
-            $new->id = $this->id;
             $new->qty = $this->qty + $other->qty;
             $new->measurement = $this->measurement;
         } else {

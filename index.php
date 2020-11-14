@@ -1,8 +1,12 @@
 <?php 
     include "header.php"; 
-    include "mockData.php"
+    require_once "dbCred.php";
+    require_once "collection.php";
+    require_once "recipe.php";
+    require_once "ingredient.php";
 ?>
 <?php
+
     $currentRecipe = new Recipe();
     $recipe1 = new Recipe();
     $recipe2 = new Recipe();
@@ -15,26 +19,26 @@
 
     if(isset($_POST['current'])) {
         $searchedValue = $_POST['current'];
-        $currentRecipe = filter_by_value($mockRecipeList, "id", $searchedValue);
+        $currentRecipe = filter_by_value($recipeArray, "id", $searchedValue);
     } else {
         $currentRecipe = null;
     }
     if(isset($_POST['one'])) {
         $searchedValue = $_POST['one'];
-        $recipe1 = filter_by_value($mockRecipeList, "id", $searchedValue);
+        $recipe1 = filter_by_value($recipeArray, "id", $searchedValue);
     } else {
         $recipe1 = null;
     }
     if(isset($_POST['two'])) {
         $searchedValue = $_POST['two'];
-        $recipe2 = filter_by_value($mockRecipeList, "id", $searchedValue);
+        $recipe2 = filter_by_value($recipeArray, "id", $searchedValue);
     } else {
         $recipe2 = null;
     }
     if(isset($_POST['three'])) {
         $searchedValue = $_POST['three'];
-        $recipe3 = filter_by_value($mockRecipeList, "id", $searchedValue);array_filter(
-            $mockRecipeList,
+        $recipe3 = filter_by_value($recipeArray, "id", $searchedValue);array_filter(
+            $recipeArray,
             function ($e) use ($searchedValue) {
                 return $e->id == $searchedValue;
             });
@@ -43,8 +47,8 @@
     }
     if(isset($_POST['four'])) {
         $searchedValue = $_POST['four'];
-        $recipe4 = filter_by_value($mockRecipeList, "id", $searchedValue);array_filter(
-            $mockRecipeList,
+        $recipe4 = filter_by_value($recipeArray, "id", $searchedValue);array_filter(
+            $recipeArray,
             function ($e) use ($searchedValue) {
                 return $e->id == $searchedValue;
             });
@@ -53,19 +57,19 @@
     }
     if(isset($_POST['five'])) {
         $searchedValue = $_POST['five'];
-        $recipe5 = filter_by_value($mockRecipeList, "id", $searchedValue);
+        $recipe5 = filter_by_value($recipeArray, "id", $searchedValue);
     } else {
         $recipe5 = null;
     }
     if(isset($_POST['six'])) {
         $searchedValue = $_POST['six'];
-        $recipe6 = filter_by_value($mockRecipeList, "id", $searchedValue);
+        $recipe6 = filter_by_value($recipeArray, "id", $searchedValue);
     } else {
         $recipe6 = null;
     }
     if(isset($_POST['seven'])) {
         $searchedValue = $_POST['seven'];
-        $recipe7 = filter_by_value($mockRecipeList, "id", $searchedValue);
+        $recipe7 = filter_by_value($recipeArray, "id", $searchedValue);
     } else {
         $recipe7 = null;
     }
@@ -87,11 +91,8 @@
     }
 
 ?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script>
-    //   TODO set up database calls to pull update recipe info
-    var instructions = new Map();
-
+    var instructions = new Array();
     function nextSpot() {
         if( typeof nextSpot.counter == 'undefined' || nextSpot.counter > 6 ) {
             nextSpot.counter = 1;
@@ -107,7 +108,7 @@
             document.getElementById('edit_link').hidden = false;
         }
         current.value = id;
-        document.getElementById('recipeInfo').innerHTML = instructions.get(id);
+        document.getElementById('recipeInfo').innerHTML = instructions[recipeid = id];
     }
 
     function addToList(){
@@ -122,11 +123,8 @@
     }
 
     function storeInstruction(key, value){
-        instructions.set(key.toString(), value);
+        instructions.push(key.toString(), value);
     }
-    // TODO Once database is set up, create a function that reloads the window to get updated POST data
-    // TODO Add function that searches the given list (Ajax onKeyChange in the search box -> compare to current recipe list name, ingredients)
-    // TODO Add function that sort the list based on given criteria (Ajax onStateChange in dropdown -> make database call to update the list order)
 
   </script>
 <main>
@@ -196,13 +194,82 @@
         <form method="POST" action>
         <div class="row">
         <?php
+        // Check the
+        if (mysqli_connect_errno()) {
+           printf("Connect failed: %s\n", mysqli_connect_error());
+            exit();
+}
+
+        // SQL Query
+        $sql = 'SELECT r.recipe_id, r.recipe_name, r.cook_time, r.recipe_instructions, r.recipe_image_url,
+                i.recipe_id, i.ingredient_name, i.measurement_type, i.measurement_qty
+                FROM recipe as r
+                JOIN recipe_ingredient as i ON i.recipe_id = r.recipe_id
+                ORDER BY ?';  // leaving this should allow for sorting later
+        // Prepare the statement
+        $stmt = mysqli_prepare($link, $sql);
+        // Bind the parameters
+        mysqli_stmt_bind_param($stmt, 's', $recipeName);
+        //Execute the statement
+        mysqli_stmt_execute($stmt);
+        // Bind the results
+        mysqli_stmt_bind_result($stmt, $rID,$rName,$rCookTime,$rInstructions,$rImage, $iID,$iName,$iMeasureType, $iQty);
+        $recipeCollection = new Collection();
+        $recipe = new Recipe;
+        $lastRowRecipe = null;
+        $workingRecipe = new Recipe;
+
+        while(mysqli_stmt_fetch($stmt)) {
+            $lRow = &$lastRowRecipe;
+            $wRecipe = &$workingRecipe;
+            $thisRowRecipe = new Recipe();
+            $ingredient = new Ingredient();
+            $thisRowRecipe->set_id($rID);
+            $thisRowRecipe->set_name($rName);
+            $thisRowRecipe->set_cookTime($rCookTime);
+            $thisRowRecipe->set_instruction($rInstructions);
+            $thisRowRecipe->set_imageURL($rImage);
+            $ingredient->set_name($iName);
+            $ingredient->set_measurement($iMeasureType);
+            $ingredient->set_qty($iQty);
+            
+            // If this row belongs to the same recipe, just add the ingredient 
+            if($lRow != null){
+                if($thisRowRecipe->get_id() == $lRow->get_id()) {
+                    $wRecipe->addIngredient($ingredient);
+                    $lRow = $thisRowRecipe;
+                } else {
+                    // This is a new recipe. We need to add the old recipe data to the collection now that all the ingredients are added
+                    $recipeCollection->addItem($wRecipe, $wRecipe->get_id());
+                    // Set the current working recipe to the recipe in this row
+                    $wRecipe = $thisRowRecipe;
+                    $wRecipe->addIngredient($ingredient);
+                    $lRow = $thisRowRecipe;
+                }
+            } else {
+                // This is the first time through
+                $wRecipe = $thisRowRecipe;
+                $wRecipe->addIngredient($ingredient);
+                $lRow = $thisRowRecipe;
+            }
+        }
+        // Add the last recipe to the collection
+        $recipeCollection->addItem($workingRecipe, $workingRecipe->get_id());
+
+
+        // Close DB connection
+        $stmt->close();
+        $link->close();
+        
+        
         // Create an image gallery with 4 columns (responsive to 2 with css)
-            $recipeCount = sizeof($mockRecipeList); //total number of recipes
+            $recipeCount = $recipeCollection->length(); //total number of recipes
+            $recipeArray = $recipeCollection->allValues();
             $maxColumns = 4; // total number of columns
             $minPerColumn =  intdiv($recipeCount,$maxColumns); //how many pictures per column on average Ex: 10 recipes at 3 columns should give us a minumum of 3 per column
             $columnsWithExtraImages = $recipeCount%$maxColumns;
             static $recipeIndex = 0;
-
+            
             for($index = 0; $index < $maxColumns; $index++){
                 $extrasLeft = $columnsWithExtraImages;
                 echo('<div class="column">');
@@ -213,17 +280,19 @@
                 }
                 for($i = 0; $i < $imagePerColumn; $i++){
                     if($recipeIndex < $recipeCount){
-                        $recipe = $mockRecipeList[$recipeIndex];
+                        $recipe = $recipeArray[$recipeIndex];
                         $image = $recipe->imageURL;
                         $instructions = " ".$recipe->displayRecipe()." ";
-                        echo("<img class=\"foodIcon,recipeImg\" id=".$recipe->id." src=".$image." onclick=\"updateRecipe(this.id)\">");
+                        echo("<img class=\"foodIcon,recipeImg\" id=\"".$recipe->id."\" src=\"Images/".$image."\" alt=\"".$recipe->name."\" onclick=\"updateRecipe(this.id)\">");
                         echo("<script>storeInstruction(".$recipe->id.",\"".$instructions."\")</script>");
                         $recipeIndex++;
                     }
                 }
                 $extrasLeft--;
-                echo('</div>');    
+                echo('</div>');   
                 }
+            
+
             ?>
         </div>
         <input type="hidden" id ="current" name="current" value="">

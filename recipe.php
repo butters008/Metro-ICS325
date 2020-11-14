@@ -63,16 +63,19 @@ class Recipe {
         public function displayIngredients(){
             $output = "<ui>";
             foreach($this->ingredientList as $ing){
-                $output = $output."<li>".$ing->qty." ".$ing->measurement." ".$ing->name."</li>";
+                $output = $output."<li>".$ing->get_qty()." ".$ing->get_measurement()." ".$ing->get_name()."</li>";
             }
             $output = $output."</ul>";
             return $output;
-            
         }
 
         public function displayRecipe(){
-            $output = "<h3>Recipe: ".$this->name."</h3>"."<p>Cook Time: ".$this->displayCookTime()."</p>"."<p>Instructions: ".$this->instruction."</p>"."<p>Ingredients: </p>".$this->displayIngredients();   
+            $output = "<h3>Recipe: ".$this->name."</h3>"."<p>Cook Time: ".$this->displayCookTime()."</p>"."<p>Instructions: ".trim($this->instruction, "\n")."</p>"."<p>Ingredients: </p>".$this->displayIngredients();   
             return $output; 
+        }
+
+        public function addIngredient($ingredient){
+            array_push($this->ingredientList, $ingredient);   
         }
 
     }

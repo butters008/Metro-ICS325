@@ -1,5 +1,6 @@
 <?php include "header.php"; ?>
 <!-- TODO implement $_POST data in order to pull existing recipe details -->
+<!-- I added an auto increment to the id column (recipe and shopping list) on the database so we don't have to worry about creating a new ID for each added recipe-->
 <main>
     <!-- Making a switch here to choose from modifing or adding -->
     <br /><br />
