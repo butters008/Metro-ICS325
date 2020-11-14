@@ -187,96 +187,99 @@ require_once "ingredient.php";
                 i.recipe_id, i.ingredient_name, i.measurement_type, i.measurement_qty
                 FROM recipe as r
                 JOIN recipe_ingredient as i ON i.recipe_id = r.recipe_id
-                ORDER BY '.$sort;
-                //.' '.$ascOrDesc;  
+                ORDER BY '.$sort.' '.$ascOrDesc;  
 
                 // Prepare the statement
-                $stmt = mysqli_prepare($link, $sql);
-                
-                //Execute the statement
-                mysqli_stmt_execute($stmt);
-                
-                // Bind the results
-                mysqli_stmt_bind_result($stmt, $rID, $rName, $rCookTime, $rInstructions, $rImage, $ringredientCount, $iID, $iName, $iMeasureType, $iQty);
-                $recipeCollection = new Collection();
-                $recipe = new Recipe;
-                $lastRowRecipe = null;
-                $workingRecipe = new Recipe;
-
-                while (mysqli_stmt_fetch($stmt)) {
-                    $lRow = &$lastRowRecipe;
-                    $wRecipe = &$workingRecipe;
-                    $thisRowRecipe = new Recipe();
-                    $ingredient = new Ingredient();
-                    $thisRowRecipe->set_id($rID);
-                    $thisRowRecipe->set_name($rName);
-                    $thisRowRecipe->set_cookTime($rCookTime);
-                    $thisRowRecipe->set_instruction($rInstructions);
-                    $thisRowRecipe->set_imageURL($rImage);
-                    $ingredient->set_name($iName);
-                    $ingredient->set_measurement($iMeasureType);
-                    $ingredient->set_qty($iQty);
-
-                    // If this row belongs to the same recipe, just add the ingredient 
-                    if ($lRow != null) {
-                        if ($thisRowRecipe->get_id() == $lRow->get_id()) {
-                            $wRecipe->addIngredient($ingredient);
-                            $lRow = $thisRowRecipe;
-                        } else {
-                            // This is a new recipe. We need to add the old recipe data to the collection now that all the ingredients are added
-                            $recipeCollection->addItem($wRecipe, $wRecipe->get_id());
-                    
-                            // Set the current working recipe to the recipe in this row
-                            $wRecipe = $thisRowRecipe;
-                            $wRecipe->addIngredient($ingredient);
-                            $lRow = $thisRowRecipe;
+                if($stmt = mysqli_prepare($link, $sql)){
+                    //Execute the statement
+                    if(mysqli_stmt_execute($stmt)){
+                        // Bind the results
+                        if(mysqli_stmt_bind_result($stmt, $rID, $rName, $rCookTime, $rInstructions, $rImage, $ringredientCount, $iID, $iName, $iMeasureType, $iQty)){
+                            $recipeCollection = new Collection();
+                            $recipe = new Recipe;
+                            $lastRowRecipe = null;
+                            $workingRecipe = new Recipe;
+            
+                            while (mysqli_stmt_fetch($stmt)) {
+                                $lRow = &$lastRowRecipe;
+                                $wRecipe = &$workingRecipe;
+                                $thisRowRecipe = new Recipe();
+                                $ingredient = new Ingredient();
+                                $thisRowRecipe->set_id($rID);
+                                $thisRowRecipe->set_name($rName);
+                                $thisRowRecipe->set_cookTime($rCookTime);
+                                $thisRowRecipe->set_instruction($rInstructions);
+                                $thisRowRecipe->set_imageURL($rImage);
+                                $ingredient->set_name($iName);
+                                $ingredient->set_measurement($iMeasureType);
+                                $ingredient->set_qty($iQty);
+            
+                                // If this row belongs to the same recipe, just add the ingredient 
+                                if ($lRow != null) {
+                                    if ($thisRowRecipe->get_id() == $lRow->get_id()) {
+                                        $wRecipe->addIngredient($ingredient);
+                                        $lRow = $thisRowRecipe;
+                                    } else {
+                                        // This is a new recipe. We need to add the old recipe data to the collection now that all the ingredients are added
+                                        $recipeCollection->addItem($wRecipe, $wRecipe->get_id());
+                                
+                                        // Set the current working recipe to the recipe in this row
+                                        $wRecipe = $thisRowRecipe;
+                                        $wRecipe->addIngredient($ingredient);
+                                        $lRow = $thisRowRecipe;
+                                    }
+                                } else {
+                                    // This is the first time through
+                                    $wRecipe = $thisRowRecipe;
+                                    $wRecipe->addIngredient($ingredient);
+                                    $lRow = $thisRowRecipe;
+                                }
+                            }
+                            // Add the last recipe to the collection
+                            $recipeCollection->addItem($workingRecipe, $workingRecipe->get_id());
+            
+            
+                            // Close DB connection
+                            $stmt->close();
+                            $link->close();
+                            
+            
+            
+                            // Create an image gallery with 4 columns (responsive to 2 with css)
+                            $recipeCount = $recipeCollection->length(); //total number of recipes
+                            $recipeArray = $recipeCollection->allValues();
+                            $maxColumns = 4; // total number of columns
+                            $minPerColumn =  floor($recipeCount / $maxColumns); //how many pictures per column on average Ex: 10 recipes at 3 columns should give us a minumum of 3 per column
+                            $columnsWithExtraImages = $recipeCount % $maxColumns;
+                            static $recipeIndex = 0;
+            
+                            for ($index = 0; $index < $maxColumns; $index++) {
+                                $extrasLeft = $columnsWithExtraImages;
+                                echo ('<div class="column">');
+                                if ($extrasLeft > 0) {
+                                    $imagePerColumn = $minPerColumn + 1;
+                                } else {
+                                    $imagePerColumn = $minPerColumn;
+                                }
+                                for ($i = 0; $i < $imagePerColumn; $i++) {
+                                    if ($recipeIndex < $recipeCount) {
+                                        $recipe = $recipeArray[$recipeIndex];
+                                        $image = $recipe->imageURL;
+                                        $instructions = " " . $recipe->displayRecipe() . " ";
+                                        echo ("<img class=\"foodIcon,recipeImg\" id=\"" . $recipe->id . "\" src=\"Images/" . $image . "\" alt=\"" . $recipe->name . "\" onclick=\"updateRecipe(this.id)\">");
+                                        echo ("<script>storeInstruction(" . $recipe->id . ",\"" . $instructions . "\")</script>");
+                                        $recipeIndex++;
+                                    }
+                                }
+                                $extrasLeft--;
+                                echo ('</div>');
+                            }
                         }
-                    } else {
-                        // This is the first time through
-                        $wRecipe = $thisRowRecipe;
-                        $wRecipe->addIngredient($ingredient);
-                        $lRow = $thisRowRecipe;
                     }
                 }
-                // Add the last recipe to the collection
-                $recipeCollection->addItem($workingRecipe, $workingRecipe->get_id());
-
-
-                // Close DB connection
-                $stmt->close();
-                $link->close();
                 
-
-
-                // Create an image gallery with 4 columns (responsive to 2 with css)
-                $recipeCount = $recipeCollection->length(); //total number of recipes
-                $recipeArray = $recipeCollection->allValues();
-                $maxColumns = 4; // total number of columns
-                $minPerColumn =  floor($recipeCount / $maxColumns); //how many pictures per column on average Ex: 10 recipes at 3 columns should give us a minumum of 3 per column
-                $columnsWithExtraImages = $recipeCount % $maxColumns;
-                static $recipeIndex = 0;
-
-                for ($index = 0; $index < $maxColumns; $index++) {
-                    $extrasLeft = $columnsWithExtraImages;
-                    echo ('<div class="column">');
-                    if ($extrasLeft > 0) {
-                        $imagePerColumn = $minPerColumn + 1;
-                    } else {
-                        $imagePerColumn = $minPerColumn;
-                    }
-                    for ($i = 0; $i < $imagePerColumn; $i++) {
-                        if ($recipeIndex < $recipeCount) {
-                            $recipe = $recipeArray[$recipeIndex];
-                            $image = $recipe->imageURL;
-                            $instructions = " " . $recipe->displayRecipe() . " ";
-                            echo ("<img class=\"foodIcon,recipeImg\" id=\"" . $recipe->id . "\" src=\"Images/" . $image . "\" alt=\"" . $recipe->name . "\" onclick=\"updateRecipe(this.id)\">");
-                            echo ("<script>storeInstruction(" . $recipe->id . ",\"" . $instructions . "\")</script>");
-                            $recipeIndex++;
-                        }
-                    }
-                    $extrasLeft--;
-                    echo ('</div>');
-                }
+                
+               
 
 
                 ?>

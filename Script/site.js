@@ -35,9 +35,9 @@ function setSort(){
     $sort = document.getElementById('sort').value
     document.cookie = "sort="+$sort;
     if($sort == 'r.ingredient_count'){
-        document.cookie = "direction=DESC";
-    } else {
         document.cookie = "direction=ASC";
+    } else {
+        document.cookie = "direction=DESC";
     }
 
     $('#gallery').load('index.php #gallery');
