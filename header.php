@@ -15,6 +15,7 @@ echo"
             .wrapper{ width: 350px; padding: 20px; }
         </style>
         <script src=\"https://code.jquery.com/jquery-3.5.0.js\"></script>
+        <script src=\"Script/site.js\"></script>
     </head>
     <body>
         <header>
