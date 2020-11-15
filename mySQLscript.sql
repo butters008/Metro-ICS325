@@ -15,7 +15,7 @@ pw varchar(100)
 );
 Create table Shopping_List(
 shopping_list_id Int Primary key AUTO_INCREMENT,
-shopping_list_date Date,
+shopping_list_date Datetime,
 user_email varchar(25),
 foreign key (user_email) references User(user_email)
 );

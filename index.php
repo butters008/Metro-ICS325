@@ -7,96 +7,6 @@ require_once "ingredient.php";
 ?>
 <main>
     <br /><br />
-    <?php
-
-    $currentRecipe = new Recipe();
-    $recipe1 = new Recipe();
-    $recipe2 = new Recipe();
-    $recipe3 = new Recipe();
-    $recipe4 = new Recipe();
-    $recipe5 = new Recipe();
-    $recipe6 = new Recipe();
-    $recipe7 = new Recipe();
-    
-
-    if (isset($_POST['current'])) {
-        $searchedValue = $_POST['current'];
-        $currentRecipe = filter_by_value($recipeArray, "id", $searchedValue);
-    } else {
-        $currentRecipe = null;
-    }
-    if (isset($_POST['one'])) {
-        $searchedValue = $_POST['one'];
-        $recipe1 = filter_by_value($recipeArray, "id", $searchedValue);
-    } else {
-        $recipe1 = null;
-    }
-    if (isset($_POST['two'])) {
-        $searchedValue = $_POST['two'];
-        $recipe2 = filter_by_value($recipeArray, "id", $searchedValue);
-    } else {
-        $recipe2 = null;
-    }
-    if (isset($_POST['three'])) {
-        $searchedValue = $_POST['three'];
-        $recipe3 = filter_by_value($recipeArray, "id", $searchedValue);
-        array_filter(
-            $recipeArray,
-            function ($e) use ($searchedValue) {
-                return $e->id == $searchedValue;
-            }
-        );
-    } else {
-        $recipe3 = null;
-    }
-    if (isset($_POST['four'])) {
-        $searchedValue = $_POST['four'];
-        $recipe4 = filter_by_value($recipeArray, "id", $searchedValue);
-        array_filter(
-            $recipeArray,
-            function ($e) use ($searchedValue) {
-                return $e->id == $searchedValue;
-            }
-        );
-    } else {
-        $recipe4 = null;
-    }
-    if (isset($_POST['five'])) {
-        $searchedValue = $_POST['five'];
-        $recipe5 = filter_by_value($recipeArray, "id", $searchedValue);
-    } else {
-        $recipe5 = null;
-    }
-    if (isset($_POST['six'])) {
-        $searchedValue = $_POST['six'];
-        $recipe6 = filter_by_value($recipeArray, "id", $searchedValue);
-    } else {
-        $recipe6 = null;
-    }
-    if (isset($_POST['seven'])) {
-        $searchedValue = $_POST['seven'];
-        $recipe7 = filter_by_value($recipeArray, "id", $searchedValue);
-    } else {
-        $recipe7 = null;
-    }
-
-    $selected = array($recipe1, $recipe2, $recipe3, $recipe4, $recipe5, $recipe6, $recipe7);
-
-    function filter_by_value($array, $index, $value)
-    {
-        if (is_array($array) && count($array) > 0) {
-            foreach (array_keys($array) as $key) {
-                $temp[$key] = $array[$key][$index];
-
-                if ($temp[$key] == $value) {
-                    $newarray[$key] = $array[$key];
-                }
-            }
-        }
-        return $newarray[0];
-    }
-    ?>
-    <br /><br />
     <div>
         <form method="POST" action="list.php">
             <table class="DaysOfWeek">
@@ -111,7 +21,8 @@ require_once "ingredient.php";
                         <th><?php echo "Meal 7"; ?></th>
                     </tr>
                     <tr>
-                        <?php
+                        <?php                        
+                        // Create box for selecting meals
                         $ids = array("one", "two", "three", "four", "five", "six", "seven");
                         for ($index = 0; $index < 7; $index++) {
                             if (!empty($selected[$index])) {
@@ -124,8 +35,6 @@ require_once "ingredient.php";
                             }
                         }
                         ?>
-
-
                     </tr>
                 </tbody>
             </table><br />
@@ -162,7 +71,6 @@ require_once "ingredient.php";
         <form  id="gallery" method="POST" action>
             <div class="row">
                 <?php
-
                 if (isset($_COOKIE['sort'])) {
                     $sort=$_COOKIE['sort'];
                     unset($_COOKIE['sort']);
@@ -242,7 +150,6 @@ require_once "ingredient.php";
                             // Add the last recipe to the collection
                             $recipeCollection->addItem($workingRecipe, $workingRecipe->get_id());
             
-            
                             // Close DB connection
                             $stmt->close();
                             $link->close();
@@ -302,7 +209,9 @@ require_once "ingredient.php";
 
                             }
                         }
-                    }
+                        echo('<div id="recs">');
+                    }   
+                                   
                 }
                 ?>
             </div>

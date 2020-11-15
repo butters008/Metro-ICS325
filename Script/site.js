@@ -38,6 +38,8 @@ function addToList(){
     spot = document.getElementById(img);
     spot.src = document.getElementById(currentID.toString()).src;
     spot.hidden = false;
+    document.cookie = id[(number-1)]+"="+currentID;
+    $('#recs').load('index.php #recs');
 }
 
 
@@ -53,7 +55,7 @@ function setSort(){
     $('#gallery').load('index.php #gallery');
 
 }
-
+// Search the recipe list
 function search(term){
     var searchBox = document.getElementById('search');
     if(searchBox.value.length > 0){
@@ -61,4 +63,5 @@ function search(term){
     }
     $('#gallery').load('index.php #gallery');
 }
+
 

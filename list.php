@@ -1,19 +1,26 @@
 <?php include "header.php";
-require_once "mockData.php";
-require_once "ingredientCollection.php"; 
+require_once "Collection.php";
+require_once "dbCred.php"; 
+require_once "recipe.php";
+require_once "ingredient.php";
 ?>
 <?php
-// TODO If user is logged in create a shopping list class and add it to the associated user
-$date = date("m-d-Y");
-$ids = array();
-$ingredients = array();
-array_pop($ids);
-array_pop($ingredients);
-$ids = getIDs();
-$ingredients = getIngredients($mockRecipeList, $ids);
-$masterList = getIngredientCollection($ingredients);
 
-function getIDs(){
+// Initialize the session
+session_start();
+
+// ****Variables
+$datetime = new DateTime('now', new DateTimeZone('CST'));
+$list_date = $datetime->format("Y-m-d h:i");
+$display_date = date("m-d-Y");
+$ids = getRecipeIDs();
+$loggedIn = isset($_SESSION["loggedin"]) && isset($_SESSION["email"]); 
+$recipeCollection = new Collection;
+$list_id = 0;
+// ****Functions 
+
+//Get the recipe IDs from the post data    
+function getRecipeIDs(){
     $labels = array('one','two','three','four','five','six','seven');
     $output = array();
     array_pop($output);
@@ -25,48 +32,155 @@ function getIDs(){
     return $output;
 }
 
-// TODO This will have to come from the database but for now we have to cycle through mock data up to 7 times which is terrible
-function getIngredients($list, $idList){
-    $output = array();
-    array_pop($output);
-    foreach($idList as $id){
-        foreach($list as $item){
-            $num = intval($id);
-            if($item->id == $num){
-                array_push($output,($item->get_ingredientList()));
-            }
-        }
-    }   
-    return $output;
+function getRecipeIDValues($date, $ids){
+    $user = $_SESSION['email'];
+    $values = "";
+    foreach(array_filter($ids) as $id){
+        $values = $values.'((SELECT shopping_list_id FROM shopping_list WHERE shopping_list_date=\''.$date.'\' and user_email=\''.$user.'\'), '.$id.'),';
+    }
+    return substr($values,0,-1) ;
+}
+function whereString($ids){
+    $size = sizeof(array_filter($ids));
+    $output = '?';
+    for($i=1; $i<$size; $i++){
+        $output .= ' or ?';
+    }
+    return ($output .= ';');
 }
 
-// TODO find a way to combine ingredients to avoid duplicates
-function getIngredientCollection($list){
-    $collection = new IngredientCollection();
-    foreach($list as $arr){
-        foreach($arr as $ing){
-            $collection->addItem($ing);
-        }
-    }
-    return $collection;
+    
+// Check the connection
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
 }
+
+// SQL Query to get all recipes
+$sql = 'SELECT r.recipe_id, r.recipe_name, r.ingredient_count, i.recipe_id, i.ingredient_name, i.measurement_type, i.measurement_qty
+FROM recipe as r
+JOIN recipe_ingredient as i ON i.recipe_id = r.recipe_id
+ORDER BY r.recipe_id';
+
+
+// Prepare the statement
+if($stmt = mysqli_prepare($link, $sql)){
+    //Execute the statement
+    if(mysqli_stmt_execute($stmt)){
+        // Bind the results
+        if(mysqli_stmt_bind_result($stmt, $rID, $rName, $ringredientCount, $iID, $iName, $iMeasureType, $iQty)){
+            $collection = &$recipeCollection;
+            $lastRowRecipe = null;
+            $workingRecipe = new Recipe;
+
+            while (mysqli_stmt_fetch($stmt)) {
+                
+                $lRow = &$lastRowRecipe;
+                $wRecipe = &$workingRecipe;
+                $thisRowRecipe = new Recipe();
+                $ingredient = new Ingredient();
+                $thisRowRecipe->set_id($rID);
+                $thisRowRecipe->set_name($rName);
+                $ingredient->set_name($iName);
+                $ingredient->set_measurement($iMeasureType);
+                $ingredient->set_qty($iQty);
+            
+
+                // If this row belongs to the same recipe, just add the ingredient 
+                if ($lRow != null) {
+                    if ($thisRowRecipe->get_id() == $lRow->get_id()) {
+                        $wRecipe->addIngredient($ingredient);
+                        $lRow = $thisRowRecipe;
+                    } else {
+
+                        // This is a new recipe. We need to add the old recipe data to the collection now that all the ingredients are added
+                        $collection->addItem($wRecipe, $wRecipe->get_id());
+
+                        // Set the current working recipe to the recipe in this row
+                        $wRecipe = $thisRowRecipe;
+                        $wRecipe->addIngredient($ingredient);
+                        $lRow = $thisRowRecipe;
+                    }
+                } else {
+                    // This is the first time through
+                    $wRecipe = $thisRowRecipe;
+                    $wRecipe->addIngredient($ingredient);
+                    $lRow = $thisRowRecipe;
+                }
+            }
+            // Add the last recipe to the collection
+            $collection->addItem($workingRecipe, $workingRecipe->get_id());
+            }
+             // Close statement
+             mysqli_stmt_close($stmt);
+        }
+    
+    }
+    
+    $shoppingListCollecion = new Collection;
+    $shoppingListCollecion = getSelectedRecipes($recipeCollection, $ids);
+
+    function getSelectedRecipes($collection, $ids){
+        $col = new Collection;
+        foreach(array_filter($ids) as $id){
+            $col->addItem($collection->getItem($id), $id);
+        }
+        return $col;
+    }
+
+    // Store the details if the user is logged in
+    if($loggedIn){
+        $sql = 'INSERT into shopping_list (shopping_list_date, user_email) values ( ?, ? )';
+        // Prepare the statement
+        if($stmt = mysqli_prepare($link, $sql)){
+            // Bind variables to the prepared statement as parameters
+            if(mysqli_stmt_bind_param($stmt, "ss", $param_list_date, $param_email)){
+                // Set paramenter
+                $param_list_date = $list_date;
+                $param_email = $_SESSION['email'];
+                //Execute the statement
+                if(mysqli_stmt_execute($stmt)){
+                    $last_id = mysqli_insert_id($link);
+                    $list_id =$last_id;
+                    // Close statement
+                    mysqli_stmt_close($stmt);
+                }             
+            }        
+        }
+        foreach($shoppingListCollecion->allValues() as $recipe){
+            $sql = 'INSERT into shopping_list_recipe (shopping_list_id, recipe_id) values (?,?)';
+            // Prepare the statement
+            if($stmt = mysqli_prepare($link, $sql)){
+                // Bind variables to the prepared statement as parameters
+                if(mysqli_stmt_bind_param($stmt, "ss", $param_list_id, $param_recipe)){
+                    // Set paramenter
+                    $param_list_id = $list_id;
+                    $param_recipe =  $recipe->get_id();
+                    //Execute the statement
+                    if(mysqli_stmt_execute($stmt)){
+                        $last_id = mysqli_insert_id($link);
+                        // Close statement
+                        mysqli_stmt_close($stmt);
+                    }             
+                }   
+            }
+        }
+
+        // Close connection
+        mysqli_close($link);
+    }
 
 ?>
 
 <main>
     <h2>Shopping List:</h2>
-    <p>Generated <?php echo($date)?></p>
-    <ul>
+    <p>Generated <?php echo($list_date)?></p>
     <?php
-    // TODO do actual calculation rather than fake it.
-        foreach($masterList->all() as $ingredient){
-            if(!isset($count)){$count=1;} else {$count++;}
-            if($count > 10){break;}
-            $qty = $ingredient->qty *7;
-            echo("<li>".$qty." ".$ingredient->measurement." ".$ingredient->name."</li>");
+        foreach($shoppingListCollecion->allValues() as $recipe){
+            echo('<h2>'.$recipe->name.'</h2>');
+            echo($recipe->displayIngredients());
         }
     ?>
-    </ul>
     
 </main>
 
