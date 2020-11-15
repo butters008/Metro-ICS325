@@ -146,7 +146,7 @@ require_once "ingredient.php";
         </div>
         <div class="searchRecipe">
             <ul>
-                <li><input type="text" placeholder="Search.."></li>
+                <li><input id="search" type="text" placeholder="Search..." onkeyup="search(this.value)"></li>
                 <!--TODO: On submit this should search for recipes by name/ingredient-->
                 <li>
                     <select name="sort" id="sort" onchange="setSort(this.value)">
@@ -159,18 +159,22 @@ require_once "ingredient.php";
                 </li>
             </ul>
         </div>
-        <form  method="POST" action>
-            <div id="gallery" class="row">
+        <form  id="gallery" method="POST" action>
+            <div class="row">
                 <?php
 
                 if (isset($_COOKIE['sort'])) {
                     $sort=$_COOKIE['sort'];
+                    unset($_COOKIE['sort']);
+                    setcookie('sort', "", time() - 3600);
                 } else {
                     $sort = 'r.recipe_name';
                     }
                 
                 if(isset($_COOKIE['direction'])){
                     $ascOrDesc = $_COOKIE['direction'];
+                    unset($_COOKIE['direction']);
+                    setcookie('direction', "", time() - 3600);
                 } else {
                     $ascOrDesc = 'ASC';
                 }
@@ -243,16 +247,39 @@ require_once "ingredient.php";
                             $stmt->close();
                             $link->close();
                             
-            
-            
+                          
+                            // If user is searching, filter values
+                            if(isset($_COOKIE['search'])){
+                                $search = $_COOKIE['search'];
+                                unset($_COOKIE['search']);
+                                setcookie('search', "", time() - 3600);
+                            } else {
+                                $search = null;
+                            }
+
+                            // Make sure we get at least one picture per column
+                            function getMinPerColumn($count, $max){
+                                $min = floor($count / $max);
+                                if($min == 0){ return 1;}
+                                return $min;
+                            }
+                            function getColumnsWithExtraImages($count, $max){
+                                if($count < $max){ return 0;}
+                                return $count % $max;
+                            }
+
                             // Create an image gallery with 4 columns (responsive to 2 with css)
-                            $recipeCount = $recipeCollection->length(); //total number of recipes
-                            $recipeArray = $recipeCollection->allValues();
+                            $recipeArray = array_filter($recipeCollection->filter($search, ["name","ingredientList"],"name"));
+                            $recipeCount = sizeof($recipeArray); //total number of recipes
                             $maxColumns = 4; // total number of columns
-                            $minPerColumn =  floor($recipeCount / $maxColumns); //how many pictures per column on average Ex: 10 recipes at 3 columns should give us a minumum of 3 per column
-                            $columnsWithExtraImages = $recipeCount % $maxColumns;
-                            static $recipeIndex = 0;
-            
+                            $minPerColumn =  getMinPerColumn($recipeCount, $maxColumns); //how many pictures per column on average Ex: 10 recipes at 3 columns should give us a minumum of 3 per column
+                            $columnsWithExtraImages = getColumnsWithExtraImages($recipeCount,$maxColumns);
+                        
+                            if($recipeCount == 0){
+                                echo('<h3>Sorry, there are no recipes that match your search.</h3>
+                                <h4>Try searching by recipe name or ingredient.</h4>');
+                            }
+
                             for ($index = 0; $index < $maxColumns; $index++) {
                                 $extrasLeft = $columnsWithExtraImages;
                                 echo ('<div class="column">');
@@ -262,26 +289,21 @@ require_once "ingredient.php";
                                     $imagePerColumn = $minPerColumn;
                                 }
                                 for ($i = 0; $i < $imagePerColumn; $i++) {
-                                    if ($recipeIndex < $recipeCount) {
-                                        $recipe = $recipeArray[$recipeIndex];
+                                    $recipe = array_shift($recipeArray);
+                                    if($recipe instanceof Recipe){
                                         $image = $recipe->imageURL;
                                         $instructions = " " . $recipe->displayRecipe() . " ";
                                         echo ("<img class=\"foodIcon,recipeImg\" id=\"" . $recipe->id . "\" src=\"Images/" . $image . "\" alt=\"" . $recipe->name . "\" onclick=\"updateRecipe(this.id)\">");
                                         echo ("<script>storeInstruction(" . $recipe->id . ",\"" . $instructions . "\")</script>");
-                                        $recipeIndex++;
                                     }
                                 }
                                 $extrasLeft--;
                                 echo ('</div>');
+
                             }
                         }
                     }
                 }
-                
-                
-               
-
-
                 ?>
             </div>
             <input type="hidden" id="current" name="current" value="">

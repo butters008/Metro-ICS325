@@ -4,6 +4,7 @@ class Collection
 
     private $items = array();
     private $values = array();
+    private $filtered = array();
 
     public function addItem($obj, $key)
     {
@@ -13,6 +14,31 @@ class Collection
             $this->items[$key] = $obj;
             array_push($this->values, $obj);
         }
+    }
+
+    public function filter($term, $fields, $inner){
+        if(!isset($term)){
+            return $this->values;
+        }
+        $this->filtered = [];
+        foreach ($this->items as $key=>$obj){
+            $properties = get_object_vars($obj);
+            foreach ($fields as $field){
+                if(is_array($properties[$field])){
+                    foreach($properties[$field] as $outer){
+                        if(stripos($outer->$inner, $term) !== false){
+                            array_push($this->filtered, $obj);
+                            
+                        }
+                    }
+                } else {
+                    if(stripos($properties[$field], $term) !== false){
+                        array_push($this->filtered, $obj);
+                    }
+                }
+            }
+        }
+        return array_unique($this->filtered, SORT_REGULAR);
     }
 
     public function deleteItem($key)
