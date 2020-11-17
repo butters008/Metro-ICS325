@@ -16,7 +16,7 @@
         echo "$recipeInstuction<br>";
 
         
-        $sql = "INSERT INTO recipe (recipe_name, cook_time, recipe_instructions) VALUES ($recipeName, $cookTime, $recipeInstuction);"; 
+        $sql = "INSERT INTO recipe (recipe_name, cook_time, recipe_instructions) VALUES (?, ?, ?);"; 
         // mysqli_query($link, $sql);
         
         // Prepare the statement
