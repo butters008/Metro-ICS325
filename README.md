@@ -12,14 +12,13 @@ TODO:
     New File:
         ~~1. Write the SQL statements to create the tables/keys based on the existing database schema~~
     index.php
-       ~~ 2. Figure out what SQL statements are needed to make calls to load the recipe data and filter/sort~~
+        ~~2. Figure out what SQL statements are needed to make calls to load the recipe data and filter/sort~~
         ~~3. Remove mock data~~
         ~~4. Refactor based on using database calls instead of mock data~~
         ~~5. Verify images work on server~~
     ingredient.php
         ~~6. N/A anymore Write functions to convert measurements so shopping list can combine ingredients~~
-    Collection.php
-        
+    Collection.php 
     list.php
         ~~7. Figure out SQL statements needed to create a new shopping list.  User has a list has many recipes has many ingredients -> probably only need to figure out adding recipes to the list though~~ 
         ~~8. Remove all mock data and refactor for db data~~
@@ -29,7 +28,6 @@ TODO:
         ~~11. Hook up database.~~
         ~~12. Convert variable names in SQL to match our tables~~
     logout.php
-
     mockData.php
        ~~ 13. Delete~~
     modifyRecipe.php
