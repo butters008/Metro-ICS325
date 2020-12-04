@@ -1,28 +1,29 @@
 <?php 
 
 include "header.php"; 
-// include "dbCred.php";
+    include "dbCred.php";
+
+
+//IMPORTNAT - This is only used for local debug, delete once we get it working on server  
+// define('DB_SERVER', 'localhost');
+// define('DB_USERNAME', 'root');
+// define('DB_PASSWORD', '');
+// define('DB_NAME', 'ics325fa2005');
+ 
+// $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+ 
+// if($link === false){
+//     die("ERROR: Could not connect. " . mysqli_connect_error());
+// }
+
+// if (!$link->set_charset("utf8")) {
+//     printf("Error loading character set utf8: %s\n", $mysqli->error);
+//     exit();
+// }
+//IMPORTNAT - This is only used for local debug, delete once we get it working on server
+
 
 if(isset($_POST["submit"])){
-
-    //IMPORTNAT - This is only used for local debug, delete once we get it working on server  
-    define('DB_SERVER', 'localhost');
-    define('DB_USERNAME', 'root');
-    define('DB_PASSWORD', '');
-    define('DB_NAME', 'ics325fa2005');
-    
-    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-    
-    if($link === false){
-        die("ERROR: Could not connect. " . mysqli_connect_error());
-    }
-
-    if (!$link->set_charset("utf8")) {
-        printf("Error loading character set utf8: %s\n", $mysqli->error);
-        exit();
-    }
-    //IMPORTNAT - This is only used for local debug, delete once we get it working on server
-        
 
     //Declaring and assigning variables from form
     $recipeName = $_POST["recipeName"];
@@ -32,16 +33,10 @@ if(isset($_POST["submit"])){
     $sql = "INSERT INTO recipe (recipe_name, cook_time, recipe_instructions) VALUES ('$recipeName', '$cookTime', '$recipeInstuction');"; 
     mysqli_query($link, $sql);
     $recipe_id = mysqli_insert_id($link);
-    echo $recipe_id;
 
-    for ($a = 0; $a < count($_POST["iName"]); $a++){
-        $sql2 = "INSERT INTO ing (recipe_id, i_amount, i_unit, i_name) VALUES ('$recipe_id', '".$_POST["iQty"][$a]."', '".$_POST["iUnit"][$a]."', '".$_POST["iName"][$a]."');"; 
-        mysqli_query($link, $sql2);
-        echo "<br>print out everything!";
-        echo $_POST["iQty"][$a]."<br>";
-        echo $_POST["iUnit"][$a]."<br>";
-        echo $_POST["iName"][$a]."<br>";
-        echo $sql2."<br>";
+    for ($a = 0; $a < count($_POST["ingredientName"]); $a++){
+        $sql = "INSERT INTO recipe (recipe_id, ingredient_amount, ingredient_unit, ingredient_name) VALUES ('$recipe_id', '".$_POST["ingredientQty"][$a]."', '".$_POST["ingredientUnit"][$a]."', '".$_POST["ingredientName"][$a]."',);"; 
+        mysqli_query($link, $sql);
     }
 
 
@@ -56,7 +51,7 @@ if(isset($_POST["submit"])){
     // //Execute the statement
     // $stmt->execute();
 
-    echo "<br>You have entered a recipe into the database";   
+    echo "You have entered a recipe into the database";   
 
 }
 else if(isset($_GET['recipe_id'])){
@@ -112,11 +107,10 @@ else if(isset($_GET['recipe_id'])){
                     <th>Ingredient Name:</th>
                 </tr>
                 <tr>
-                    <td><input type='number' name='iQty[]' step='0.01'></td>
-                    <!-- <td><input type='text' name='iUnit[]'></td>  -->
-                    <!-- <td><select name='qty' id='qty'><option value='Qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td> -->
-                    <td><select name='iUnit[]' id='qty'><option value='Qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td>
-                    <td><input type='text' name='iName[]'></td>   
+                   <td><input type='number' name='ingredientQty[]'></td>
+                   <td><input type='text' name='ingredientUnit[]'></td> 
+                   <!-- <td><select name='qty' id='qty'><option value='Qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td> -->
+                    <td><input type='text' name='ingredientName[]'></td>   
                 </tr>
             </thead>
             <tbody id="tbody"></tbody>
@@ -130,7 +124,7 @@ else if(isset($_GET['recipe_id'])){
     </form>
     
 </section>
-</main>
+
                 
 <script>
     function addedToDB() {
@@ -139,10 +133,10 @@ else if(isset($_GET['recipe_id'])){
 
     function addItem(){
         var html = "<tr>";
-            html += "<td><input type='number' step='0.01' name='iQty[]'></td>";
-            // html += "<td><input type='text' name='iUnit[]'></td>";
-            html += "<td><select name='iUnit[]' id='qty'><option value='qty'><option value='unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td>";
-            html += "<td><input type='text' name='iName[]'></td>";
+            html += "<td><input type='number' name='ingredientQty[]'></td>";
+            html += "<td><input type='text' name='ingredientUnit[]'></td>";
+            //html += "<td><select name='qty' id='qty'><option value='qty'><option value='unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td>";
+            html += "<td><input type='text' name='ingredientName[]'></td>";
             html += "</tr>";
             document.getElementById("tbody").insertRow().innerHTML = html;
     }

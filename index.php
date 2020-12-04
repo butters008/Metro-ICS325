@@ -50,7 +50,15 @@ require_once "ingredient.php";
         <div id="howToMakeBox">
             <input type="button" id="add_btn" value="Add to List" onclick="addToList()" hidden=true>
             <div id="recipeInfo">Click a recipe to see more info here</div>
-            <a id="edit_link" href='modifyRecipe.php' hidden=true>Edit Recipe</a>
+
+            <!-- Need to add the ID to which we are sending to modify recipe 
+                 Example from my ICS 311 class:
+                
+            <td><a href="movies_info.php?movie_id='.$row['movie_id'].'" ?><b>'.$row["movie_id"].'</b></td>
+            <td><a href="movies_info.php?movie_id='.$row['movie_id'].'" ?><b>'.$row["movie_name_native"].'</b></td>
+            
+            Delete comment after link is working! -->
+            <a id="edit_link" href='modifyRecipe.php?recipe_id=' hidden=true>Edit Recipe</a> 
 
         </div>
         <div class="searchRecipe">

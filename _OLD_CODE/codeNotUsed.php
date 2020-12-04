@@ -92,4 +92,96 @@
     //     });
     //     // location.reload();
     // }
+
+
+
+
+
+    echo '<main onload="addedToDB()">
+    <br /><br />
+    <section class="submitForm">
+        <h3>Added to DB</h3><br />
+        <h3 id="submitTitle">Cookbook Recipe</h3><br />
+        <form action="modifyRecipe.php" method="post">  
+            
+            <label for="recipeName">Name of Recipe:</label><br>
+            <input type="text" id="recipeName" name="recipeName"><br><br> <!-- recipe_name -->
+
+            <label for="cookTime">Cooking Time for Recipe:</label><br>
+            <input type="text" id="cookTime" name="cookTime"><br><br> <!-- cook_time -->
+
+            <label for="ingredientTable">Ingredients for Recipe:</label><br><br>
+            <table id="ingredientTable">
+                <thead>
+                    <tr>
+                        <th>Qty: </th>
+                        <th>Units:</th>
+                        <th>Ingredient Name:</th>
+                    </tr>
+                    <tr>';
+                echo "  <td><input type='number' name='ingredientQty[]'></td>
+                        <td><select name='qty' id='qty'><option value='Qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td>
+                        <td><input type='text' name='ingredientName[]'></td>";   
+                echo'</tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table><br>
+            <p><button type="button" onclick="addItem();">Add Item</button></p><br><br>
+            
+            <!-- recipe_instructions -->
+            <label for="recipeInstuction"><strong>Instructions for Recipe:</strong></label><br/><br/>
+            <textarea id="recipeInstuction" name="recipeInstuction" rows="15" cols="50"></textarea><br/><br/>  
+            <p><input type="submit" value="submit" name="submit"></p><br/><br/>
+        </form>
+        
+    </section>';
+
+
+    else{
+        echo '<section class="submitForm">
+        <h3 id="submitTitle">Cookbook Recipe</h3><br />
+        <form action="modifyRecipe.php" method="post">  
+            
+            <label for="recipeName">Name of Recipe:</label><br>
+            <input type="text" id="recipeName" name="recipeName"><br><br> <!-- recipe_name -->
+
+            <label for="cookTime">Cooking Time for Recipe:</label><br>
+            <input type="text" id="cookTime" name="cookTime"><br><br> <!-- cook_time -->
+
+            <label for="ingredientTable">Ingredients for Recipe:</label><br><br>
+            <table id="ingredientTable">
+                <thead>
+                    <tr>
+                        <th>Qty: </th>
+                        <th>Units:</th>
+                        <th>Ingredient Name:</th>
+                    </tr>
+                    <tr>';
+                echo "
+                        <td><input type='number' name='ingredientQty[]'></td>
+                        <td><select name='qty' id='qty'><option value='Qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td>
+                        <td><input type='text' name='ingredientName[]'></td>";
+        echo '               
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody><!-- This is for the dynamic rows -->
+            </table><br>
+            <p><button type="button" onclick="addItem();">Add Item</button></p><br><br>
+
+            <!-- recipe_instructions -->
+            <label for="recipeInstuction"><strong>Instructions for Recipe:</strong></label><br/><br/>
+            <textarea id="recipeInstuction" name="recipeInstuction" rows="15" cols="50"></textarea><br/><br/>  
+            <p><input type="submit" value="submit" name="submit"></p><br/><br/>
+        </form>
+
+    </section>
+
+<br /><br />
+</main>';
+            
+            
+    }
+
+
+
     ?>
