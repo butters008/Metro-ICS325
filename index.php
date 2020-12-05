@@ -58,7 +58,7 @@ require_once "ingredient.php";
             <td><a href="movies_info.php?movie_id='.$row['movie_id'].'" ?><b>'.$row["movie_name_native"].'</b></td>
             
             Delete comment after link is working! -->
-            <a id="edit_link" href='modifyRecipe.php?recipe_id=' hidden=true>Edit Recipe</a> 
+            <a id="edit_link" href='' hidden=true>Edit Recipe</a> 
 
         </div>
         <div class="searchRecipe">
@@ -116,12 +116,10 @@ require_once "ingredient.php";
                         // Bind the results
                         if(mysqli_stmt_bind_result($stmt, $rID, $rName, $rCookTime, $rInstructions, $rImage, $ringredientCount, $iID, $iName, $iMeasureType, $iQty)){
                             $recipeCollection = new Collection();
-                            $recipe = new Recipe;
-                            $lastRowRecipe = null;
                             $workingRecipe = new Recipe;
-            
+                            $i_counter = 1;
+                            
                             while (mysqli_stmt_fetch($stmt)) {
-                                $lRow = &$lastRowRecipe;
                                 $wRecipe = &$workingRecipe;
                                 $thisRowRecipe = new Recipe();
                                 $ingredient = new Ingredient();
@@ -130,39 +128,31 @@ require_once "ingredient.php";
                                 $thisRowRecipe->set_cookTime($rCookTime);
                                 $thisRowRecipe->set_instruction($rInstructions);
                                 $thisRowRecipe->set_imageURL($rImage);
+                                $thisRowRecipe->set_ingredientCount($ringredientCount);
                                 $ingredient->set_name($iName);
                                 $ingredient->set_measurement($iMeasureType);
                                 $ingredient->set_qty($iQty);
-            
-                                // If this row belongs to the same recipe, just add the ingredient 
-                                if ($lRow != null) {
-                                    if ($thisRowRecipe->get_id() == $lRow->get_id()) {
-                                        $wRecipe->addIngredient($ingredient);
-                                        $lRow = $thisRowRecipe;
-                                    } else {
-                                        // This is a new recipe. We need to add the old recipe data to the collection now that all the ingredients are added
-                                        $recipeCollection->addItem($wRecipe, $wRecipe->get_id());
-                                
-                                        // Set the current working recipe to the recipe in this row
-                                        $wRecipe = $thisRowRecipe;
-                                        $wRecipe->addIngredient($ingredient);
-                                        $lRow = $thisRowRecipe;
-                                    }
-                                } else {
-                                    // This is the first time through
+                                $ic = &$i_counter;
+
+                                // First row of new recipe
+                                if ($ic == 1){
                                     $wRecipe = $thisRowRecipe;
-                                    $wRecipe->addIngredient($ingredient);
-                                    $lRow = $thisRowRecipe;
                                 }
+                                // If this is the last ingredient in the set add it to the recipe and the recipe to the collection collection and reset ingredient count
+                                if ($ringredientCount <= $ic){
+                                    $wRecipe->addIngredient($ingredient);
+                                    $recipeCollection->addItem($wRecipe, $wRecipe->get_id());
+                                    $ic = 1;
+                                } else if ($thisRowRecipe->get_id() == $wRecipe->get_id()){
+                                    // Otherwise add the remaining ingredients
+                                    $wRecipe->addIngredient($ingredient);
+                                    $ic++;
+                                }   
                             }
-                            // Add the last recipe to the collection
-                            $recipeCollection->addItem($workingRecipe, $workingRecipe->get_id());
             
                             // Close DB connection
                             $stmt->close();
                             $link->close();
-                            var_dump($recipeCollection);
-                            
                           
                             // If user is searching, filter values
                             if(isset($_COOKIE['search'])){
@@ -209,8 +199,11 @@ require_once "ingredient.php";
                                     if($recipe instanceof Recipe){
                                         $image = $recipe->imageURL;
                                         $instructions = " " . $recipe->displayRecipe() . " ";
+                                        if($image == null || $image == ""){
+                                            $image = 'emptyIcon.png';
+                                        }
                                         echo ("<img class=\"foodIcon,recipeImg\" id=\"" . $recipe->id . "\" src=\"Images/" . $image . "\" alt=\"" . $recipe->name . "\" onclick=\"updateRecipe(this.id)\">");
-                                        echo ("<script>storeInstruction(" . $recipe->id . ",\"" . $instructions . "\")</script>");
+                                        echo ("<script>storeInstruction(\"" . $recipe->id . "\",\"" . $instructions . "\")</script>");
                                     }
                                 }
                                 $extrasLeft--;

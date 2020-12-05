@@ -1,21 +1,22 @@
 
 // INDEX FUNCTIONS
-var instructions = new Array();
+var instructions = {};
 
 // Stores all the instructions in an array for display in the How to Make box
 function storeInstruction(key, value){
-    instructions.push(key.toString(), value);
+    instructions[key.toString()] = value;
 }
 
 // Updates the How to Make box with clicked recipe info
 function updateRecipe(id){
     var current = document.getElementById('current');
-    if(current.value == null || current.value == ""){
+    if(current.value == null || current.value == ""){ 
         document.getElementById('add_btn').hidden = false;
         document.getElementById('edit_link').hidden = false;
     }
     current.value = id;
-    document.getElementById('recipeInfo').innerHTML = instructions[recipeid = id];
+    document.getElementById('recipeInfo').innerHTML = instructions[id.toString()];
+    document.getElementById('edit_link').href = "modifyRecipe.php?recipe_id="+id;
 }
 
 // Figures out which meal to add the recipe to when Add to List is pressed
