@@ -9,6 +9,8 @@ include "dbCred.php";
 // define('DB_PASSWORD', '');
 // define('DB_NAME', 'ics325fa2005');
 
+// global $id;
+
 // $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
 // if($link === false){
@@ -21,15 +23,31 @@ include "dbCred.php";
 // }
 //IMPORTNAT - This is only used for local debug, delete once we get it working on server
 
+// if(isset($_POST["submit"])){
+//     $id = $_POST["recipe_id"];
+//     $sql = "SELECT * FROM recipe WHERE recipe_id = $id;"; 
+//     // mysqli_query($link, $sql);
+    
+//     $result = mysqli_query($link, $sql);
+//     $recipe = mysqli_fetch_assoc($result);
+//     mysqli_free_result($result);
+//     mysqli_close($link);
+
+// }
+
+
 if(isset($_GET['recipe_id'])){
 
     echo "Is this working";
 
     $id = mysqli_real_escape_string($link, $_GET['recipe_id']);
-    
+
     $sql = "SELECT * FROM recipe WHERE recipe_id = $id;"; 
     // mysqli_query($link, $sql);
-    
+
+    $ingredient = "SELECT * FROM recipe_ingredient WHERE recipe_id = $id;"; 
+    $result = mysql_query($link, $ingredient);
+
     $result = mysqli_query($link, $sql);
     $recipe = mysqli_fetch_assoc($result);
     mysqli_free_result($result);
@@ -49,14 +67,21 @@ if(isset($_GET['recipe_id'])){
 <main>
 <br /><br />
 <section class="submitForm">
+    <form action="modifyRecipe.php?recipe_id=">
+        <label for="recipeID">Pull up recipe by ID:</label><br>
+        <input type="text" id="recipeID" name="recipe_id" value="<?php echo $recipe['recipe_id'];?>"><br><br>
+    </form>
+
     <h3 id="submitTitle">Cookbook Recipe</h3><br />
     <form action="modifyRecipe.php" method="post">  
+
+        <?php echo "<img src='Images/".$recipe["recipe_image_url"]."'style='max-width: 200px; max-height: 200px;'>";?><br><br>
         
         <label for="recipeName">Name of Recipe:</label><br>
-        <input type="text" id="recipeName" name="recipeName" placeholder="<?php echo $recipe['recipe_name'];?>"><br><br> <!-- recipe_name -->
+        <input type="text" id="recipeName" name="recipeName" value="<?php echo $recipe['recipe_name'];?>"><br><br> <!-- recipe_name -->
 
         <label for="cookTime">Cooking Time for Recipe:</label><br>
-        <input type="text" id="cookTime" name="cookTime" placeholder="<?php echo $recipe['cook_time'];?>"><br><br> <!-- cook_time -->
+        <input type="text" id="cookTime" name="cookTime" value="<?php echo $recipe['cook_time'];?>"><br><br> <!-- cook_time -->
 
         <label for="ingredientTable">Ingredients for Recipe:</label><br><br>
         <table id="ingredientTable">
@@ -68,23 +93,14 @@ if(isset($_GET['recipe_id'])){
                 </tr>
 <?php 
 
-// https://stackoverflow.com/questions/15251095/display-data-from-sql-database-into-php-html-table#
-$ingredient = "SELECT * FROM recipe_ingredient WHERE recipe_id = $id"; //You don't need a ; like you do in SQL
-$result = mysql_query($query)
+//https://stackoverflow.com/questions/15251095/display-data-from-sql-database-into-php-html-table#
+
 
 while($row = mysql_fetch_array($result)){   //Creates a loop to loop through results
     echo "<tr><td>" . $row['measurement_qty'] . "</td><td>" . $row['measurement_type'] . "</td><td>" . $row['ingredient_name'] . "</td></tr>";  //$row['index'] the index here is a field name
 }
 
 ?>
-
-                <tr>
-                    <td><input type='number' name='iQty[]' step='0.01'></td>
-                    <!-- <td><input type='text' name='iUnit[]'></td>  -->
-                    <!-- <td><select name='qty' id='qty'><option value='Qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td> -->
-                    <td><select name='iUnit[]' id='qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td>
-                    <td><input type='text' name='iName[]'></td>   
-                </tr>
             </thead>
             <tbody id="tbody"></tbody>
         </table><br>
@@ -92,7 +108,7 @@ while($row = mysql_fetch_array($result)){   //Creates a loop to loop through res
         
         <!-- recipe_instructions -->
         <label for="recipeInstuction"><strong>Instructions for Recipe:</strong></label><br/><br/>
-        <textarea id="recipeInstuction" name="recipeInstuction" rows="15" cols="50"></textarea><br/><br/>  
+        <textarea id="recipeInstuction" name="recipeInstuction" rows="15" cols="50" ><?php echo $recipe['recipe_instructions']?></textarea><br/><br/>  
         <p><input type="submit" value="submit" name="submit"></p><br/><br/>
     </form>
     

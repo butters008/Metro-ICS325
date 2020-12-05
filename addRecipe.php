@@ -3,45 +3,75 @@
 include "header.php"; 
 include "dbCred.php";
 
+$msg = "";
+
 if(isset($_POST["submit"])){
 
-    //IMPORTNAT - This is only used for local debug, delete once we get it working on server  
-    // define('DB_SERVER', 'localhost');
-    // define('DB_USERNAME', 'root');
-    // define('DB_PASSWORD', '');
-    // define('DB_NAME', 'ics325fa2005');
-    
-    // $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-    
-    // if($link === false){
-    //     die("ERROR: Could not connect. " . mysqli_connect_error());
-    // }
+//IMPORTNAT - This is only used for local debug, delete once we get it working on server  
+// define('DB_SERVER', 'localhost');
+// define('DB_USERNAME', 'root');
+// define('DB_PASSWORD', '');
+// define('DB_NAME', 'ics325fa2005');
 
-    // if (!$link->set_charset("utf8")) {
-    //     printf("Error loading character set utf8: %s\n", $mysqli->error);
-    //     exit();
-    // }
-    //IMPORTNAT - This is only used for local debug, delete once we get it working on server
+// $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+// if($link === false){
+//     die("ERROR: Could not connect. " . mysqli_connect_error());
+// }
+
+// if (!$link->set_charset("utf8")) {
+//     printf("Error loading character set utf8: %s\n", $mysqli->error);
+//     exit();
+// }
+//IMPORTNAT - This is only used for local debug, delete once we get it working on server
         
 
     //Declaring and assigning variables from form
     $recipeName = $_POST["recipeName"];
     $cookTime = $_POST["cookTime"];
     $recipeInstuction = $_POST["recipeInstuction"];
+    $recipeImage = $_POST["image"]["recipe_image"];
+    $target = "Images/".basename($_FILES["image"]["name"]);
     
-    $sql = "INSERT INTO recipe (recipe_name, cook_time, recipe_instructions) VALUES ('$recipeName', '$cookTime', '$recipeInstuction');"; 
+    $sql = "INSERT INTO recipe (recipe_name, cook_time, recipe_instructions, recipe_image_url) VALUES ('$recipeName', '$cookTime', '$recipeInstuction', '$recipeImage');"; 
     mysqli_query($link, $sql);
+    // if (move_upload_file($_FILES['tmp_name']['name'], $target)){
+    //     $msg = "File was uploaded successfully";
+    // }else{
+    //     $msg = "Problem occured with upload - Try again";
+    // }
+
     $recipe_id = mysqli_insert_id($link);
     echo $recipe_id;
 
     for ($a = 0; $a < count($_POST["iName"]); $a++){
-        $sql2 = "INSERT INTO recipe_ingredient (recipe_id, ingredient_name, measurement_type, measurement_qty) VALUES ('$recipe_id', '".$_POST["iName"][$a]."', '".$_POST["iUnit"][$a]."', '".$_POST["iQty"][$a]."');";
+        $i_qty = $_POST["iQty"][$a];
+        $i_unit = $_POST["iUnit"][$a];
+        $i_name = $_POST["iName"][$a];
+
+        $sql2 = "INSERT INTO recipe_ingredient (recipe_id, ingredient_name, measurement_type, measurement_qty) VALUES (?, ?, ?, ?);";
+        // $sql2 = "INSERT INTO recipe_ingredient (recipe_id, ingredient_name, measurement_type, measurement_qty) VALUES ('$recipe_id', '".$_POST["iName"][$a]."', '".$_POST["iUnit"][$a]."', '".$_POST["iQty"][$a]."');";
         // $sql2 = "INSERT INTO ing (recipe_id, i_amount, i_unit, i_name) VALUES ('$recipe_id', '".$_POST["iQty"][$a]."', '".$_POST["iUnit"][$a]."', '".$_POST["iName"][$a]."');"; 
-        mysqli_query($link, $sql2);
+        // mysqli_query($link, $sql2);
+        
+        // Prepare the statement
+        $stmt = $link->prepare($sql2);
+        // var_dump($stmt);
+        // Bind the parameters
+    
+        $stmt->bind_param('ssss', $p_recipe_id, $p_i_name, $p_i_unit, $p_i_qty);
+        $p_recipe_id = $recipe_id;
+        $p_i_name = $i_name;
+        $p_i_unit = $i_unit;
+        $p_i_qty = $i_qty;
+
+        //Execute the statement
+        $stmt->execute();
+        
         echo "<br>print out everything!";
-        echo $_POST["iQty"][$a]."<br>";
-        echo $_POST["iUnit"][$a]."<br>";
-        echo $_POST["iName"][$a]."<br>";
+        echo $i_qty."<br>";
+        echo $i_unit."<br>";
+        echo $i_name."<br>";
         echo $sql2."<br>";
     }
 
@@ -74,6 +104,8 @@ if(isset($_POST["submit"])){
     <h3 id="submitTitle">Cookbook Recipe</h3><br />
     <form action="addRecipe.php" method="post">  
         
+        <input type="file" id="recipe_image" name="recipe_image"><br>
+
         <label for="recipeName">Name of Recipe:</label><br>
         <input type="text" id="recipeName" name="recipeName"><br><br> <!-- recipe_name -->
 
