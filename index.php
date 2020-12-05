@@ -161,6 +161,7 @@ require_once "ingredient.php";
                             // Close DB connection
                             $stmt->close();
                             $link->close();
+                            var_dump($recipeCollection);
                             
                           
                             // If user is searching, filter values

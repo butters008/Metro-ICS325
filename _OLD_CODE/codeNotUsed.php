@@ -7,6 +7,18 @@
 ?>
 
 
+
+
+
+<tr>
+    <td><input type='number' name='iQty[]' step='0.01'></td>
+    <!-- <td><input type='text' name='iUnit[]'></td>  -->
+    <!-- <td><select name='qty' id='qty'><option value='Qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td> -->
+    <td><select name='iUnit[]' id='qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td>
+    <td><input type='text' name='iName[]'></td>   
+</tr>
+
+
 <table>
     <tbody>
         <tr>
