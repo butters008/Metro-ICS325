@@ -51,14 +51,7 @@ require_once "ingredient.php";
             <input type="button" id="add_btn" value="Add to List" onclick="addToList()" hidden=true>
             <div id="recipeInfo">Click a recipe to see more info here</div>
 
-            <!-- Need to add the ID to which we are sending to modify recipe 
-                 Example from my ICS 311 class:
-                
-            <td><a href="movies_info.php?movie_id='.$row['movie_id'].'" ?><b>'.$row["movie_id"].'</b></td>
-            <td><a href="movies_info.php?movie_id='.$row['movie_id'].'" ?><b>'.$row["movie_name_native"].'</b></td>
-            
-            Delete comment after link is working! -->
-            <a id="edit_link" href='' hidden=true>Edit Recipe</a> 
+            <a id="edit_link" href='"modifyRecipe.php' hidden=true><input type="button" value= "Edit Recipe"/></a> 
 
         </div>
         <div class="searchRecipe">
@@ -215,6 +208,27 @@ require_once "ingredient.php";
                     }   
                                    
                 }
+                for($i = 15; $i < 47; $i++){
+                    $sql = 'DELETE from recipe_ingredient WHERE recipe_id = ?';
+                    if ($stmt = mysqli_prepare($link, $sql)){
+                        mysqli_stmt_bind_param($stmt, "i", $param_ID);
+                        $param_ID = $i;
+                        if(mysqli_stmt_execute($stmt)){
+                            mysqli_stmt_close($stmt);
+                        }
+                    }
+                }
+            if ($stmt = mysqli_prepare($link, $sql)){
+                mysqli_stmt_bind_param($stmt, "i", $param_ID);
+                $param_ID = $recipeID;
+                if(!mysqli_stmt_execute($stmt)){
+                    array_push($errors, "Problem removing old ingredients.");
+                }
+            } else {
+                array_push($errors, "Problem connecting to database to remove old ingredients.");
+            }
+            mysqli_stmt_close($stmt);
+        
                 ?>
             </div>
             <input type="hidden" id="current" name="current" value="">

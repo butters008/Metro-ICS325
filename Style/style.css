@@ -79,3 +79,7 @@ main{
     position: relative;
 }
 
+.error{
+    background-color:red;
+    padding: 5px;}
+

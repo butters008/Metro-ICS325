@@ -24,7 +24,7 @@ echo"
         <nav>
             <ul>
                 <li><a href='index.php'>Home</a></li>
-                <li><a href='addRecipe.php'>Add Recipe</a></li>
+                <li><a href='modifyRecipe.php'>Add Recipe</a></li>
                 <li id='accountBtn' style='float: right;'><a href='profile.php'>My Profile</a></li>
             </ul>
         </nav>";
