@@ -23,7 +23,7 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
-$sql = 'SELECT shopping_list.shopping_list_date, s.recipe_id, r.recipe_name, i.ingredient_name,i.measurement_type, i.measurement_qty
+$sql = 'SELECT shopping_list.shopping_list_date, s.recipe_id, r.recipe_name, r.ingredient_count, i.ingredient_name,i.measurement_type, i.measurement_qty
         FROM shopping_list
         JOIN shopping_list_recipe as s on shopping_list.shopping_list_id = s.shopping_list_id
         JOIN recipe as r on s.recipe_id = r.recipe_id
@@ -38,16 +38,15 @@ if($stmt = mysqli_prepare($link, $sql)){
         // Set parameters
         $param_list_id = $listID;
         //Execute the statement
-    if(mysqli_stmt_execute($stmt)){
-        
+    if(mysqli_stmt_execute($stmt)){ 
         // Bind the results
-        if(mysqli_stmt_bind_result($stmt, $list_date, $rID, $rName, $iName, $iMeasureType, $iQty)){
+        if(mysqli_stmt_bind_result($stmt, $list_date, $rID, $rName, $ringredientCount, $iName, $iMeasureType, $iQty)){
             $collection = &$recipeCollection;
-            $lastRowRecipe = null;
             $workingRecipe = new Recipe;
+            $i_counter = 1;
+            $r_counter = 1;
             
             while (mysqli_stmt_fetch($stmt)) {
-                $lRow = &$lastRowRecipe;
                 $wRecipe = &$workingRecipe;
                 $thisRowRecipe = new Recipe();
                 $ingredient = new Ingredient();
@@ -56,43 +55,39 @@ if($stmt = mysqli_prepare($link, $sql)){
                 $ingredient->set_name($iName);
                 $ingredient->set_measurement($iMeasureType);
                 $ingredient->set_qty($iQty);
-            
+                $ic = &$i_counter;
+                $rc = &$r_counter;
                 
-                // If this row belongs to the same recipe, just add the ingredient 
-                if ($lRow != null) {
-                    if ($thisRowRecipe->get_id() == $lRow->get_id()) {
-                        $wRecipe->addIngredient($ingredient);
-                        $lRow = $thisRowRecipe;
-                    } else {
-                        // This is a new recipe. We need to add the old recipe data to the collection now that all the ingredients are added
-                        $collection->addItem($wRecipe, $wRecipe->get_id());
-                        // Set the current working recipe to the recipe in this row
-                        $wRecipe = $thisRowRecipe;
-                        $wRecipe->addIngredient($ingredient);
-                        $lRow = $thisRowRecipe;
-                    }
-                } else {
-                    // This is the first time through
+                // First row of new recipe
+                if ($ic == 1){
                     $wRecipe = $thisRowRecipe;
-                    $wRecipe->addIngredient($ingredient);
-                    $lRow = $thisRowRecipe;
                 }
+                // If this is the last ingredient in the set add it to the recipe and the recipe to the collection collection and reset ingredient count
+                if ($ringredientCount <= $ic){
+                    $wRecipe->addIngredient($ingredient);
+                    $collection->addItem($wRecipe, $rc);
+                    $ic = 1;
+                    $rc++;
+                } else if ($thisRowRecipe->get_id() == $wRecipe->get_id()){
+                    // Otherwise add the remaining ingredients
+                    $wRecipe->addIngredient($ingredient);
+                    $ic++;
+                } 
             }
-            // Add the last recipe to the collection
-            $collection->addItem($workingRecipe, $workingRecipe->get_id());
-            }
-             // Close statement
-             mysqli_stmt_close($stmt);
-        }
-    }
-            // Close connection
-            mysqli_close($link);
 
-            $list_date = new DateTime($list_date);
-            $prettyDate = $list_date->format("m-d-Y h:i a");
+        }
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+}
+
+// Close connection
+mysqli_close($link);
+
+$list_date = new DateTime($list_date);
+$prettyDate = $list_date->format("m-d-Y h:i");
 }
     
-
 ?>
 <main>
     <h2>Shopping List:</h2>

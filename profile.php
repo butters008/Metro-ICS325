@@ -46,7 +46,7 @@ if($stmt = mysqli_prepare($link, $sql)){
         echo('<ul id="pastList">');
         foreach ($dates as $id=>$date){
             $prettyDate = new DateTime($date);
-            echo("<li><a href=\"pastList.php?sli=".$id."\">".$prettyDate->format("m-d-Y h:i a")."</a></li>");
+            echo("<li><a href=\"pastList.php?sli=".$id."\">".$prettyDate->format("m-d-Y h:i")."</a></li>");
         }
         echo('</ul>');
          echo('<a href="logout.php">Log Out</a>');

@@ -208,16 +208,6 @@ require_once "ingredient.php";
                     }   
                                    
                 }
-                for($i = 15; $i < 47; $i++){
-                    $sql = 'DELETE from recipe_ingredient WHERE recipe_id = ?';
-                    if ($stmt = mysqli_prepare($link, $sql)){
-                        mysqli_stmt_bind_param($stmt, "i", $param_ID);
-                        $param_ID = $i;
-                        if(mysqli_stmt_execute($stmt)){
-                            mysqli_stmt_close($stmt);
-                        }
-                    }
-                }
             if ($stmt = mysqli_prepare($link, $sql)){
                 mysqli_stmt_bind_param($stmt, "i", $param_ID);
                 $param_ID = $recipeID;

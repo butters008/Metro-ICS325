@@ -22,7 +22,8 @@ foreign key (user_email) references User(user_email)
 Create table Shopping_List_Recipe(
 recipe_id Int,
 shopping_list_id Int,
-Primary Key(recipe_id, shopping_list_id),
+meal_number varchar(10),
+Primary Key(recipe_id, shopping_list_id, meal_number),
 foreign key (recipe_id) references Recipe(recipe_id),
 foreign key (shopping_list_id) references Shopping_List(shopping_list_id)    
 );

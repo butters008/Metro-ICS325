@@ -70,12 +70,10 @@ if($stmt = mysqli_prepare($link, $sql)){
         // Bind the results
         if(mysqli_stmt_bind_result($stmt, $rID, $rName, $ringredientCount, $iID, $iName, $iMeasureType, $iQty)){
             $collection = &$recipeCollection;
-            $lastRowRecipe = null;
             $workingRecipe = new Recipe;
+            $i_counter = 1;
 
             while (mysqli_stmt_fetch($stmt)) {
-                
-                $lRow = &$lastRowRecipe;
                 $wRecipe = &$workingRecipe;
                 $thisRowRecipe = new Recipe();
                 $ingredient = new Ingredient();
@@ -84,91 +82,91 @@ if($stmt = mysqli_prepare($link, $sql)){
                 $ingredient->set_name($iName);
                 $ingredient->set_measurement($iMeasureType);
                 $ingredient->set_qty($iQty);
+                $ic = &$i_counter;
             
 
-                // If this row belongs to the same recipe, just add the ingredient 
-                if ($lRow != null) {
-                    if ($thisRowRecipe->get_id() == $lRow->get_id()) {
-                        $wRecipe->addIngredient($ingredient);
-                        $lRow = $thisRowRecipe;
-                    } else {
-
-                        // This is a new recipe. We need to add the old recipe data to the collection now that all the ingredients are added
-                        $collection->addItem($wRecipe, $wRecipe->get_id());
-
-                        // Set the current working recipe to the recipe in this row
-                        $wRecipe = $thisRowRecipe;
-                        $wRecipe->addIngredient($ingredient);
-                        $lRow = $thisRowRecipe;
-                    }
-                } else {
-                    // This is the first time through
+                // First row of new recipe
+                if ($ic == 1){
                     $wRecipe = $thisRowRecipe;
-                    $wRecipe->addIngredient($ingredient);
-                    $lRow = $thisRowRecipe;
                 }
+                // If this is the last ingredient in the set add it to the recipe and the recipe to the collection collection and reset ingredient count
+                if ($ringredientCount <= $ic){
+                    $wRecipe->addIngredient($ingredient);
+                    $collection->addItem($wRecipe, $wRecipe->get_id());
+                    $ic = 1;
+                } else if ($thisRowRecipe->get_id() == $wRecipe->get_id()){
+                    // Otherwise add the remaining ingredients
+                    $wRecipe->addIngredient($ingredient);
+                    $ic++;
+                }  
             }
-            // Add the last recipe to the collection
-            $collection->addItem($workingRecipe, $workingRecipe->get_id());
-            }
-             // Close statement
-             mysqli_stmt_close($stmt);
         }
-    
     }
+    // Close statement
+    mysqli_stmt_close($stmt);
+}
+
+        
     
-    $shoppingListCollecion = new Collection;
-    $shoppingListCollecion = getSelectedRecipes($recipeCollection, $ids);
+$shoppingListCollecion = new Collection;
+$shoppingListCollecion = getSelectedRecipes($recipeCollection, $ids);
 
-    function getSelectedRecipes($collection, $ids){
-        $col = new Collection;
-        foreach(array_filter($ids) as $id){
-            $col->addItem($collection->getItem($id), $id);
-        }
-        return $col;
+function getSelectedRecipes($collection, $ids){
+    $col = new Collection;
+    $index =0;
+    foreach(array_filter($ids) as $id){
+        $col->addItem($collection->getItem($id), $index);
+        $index++;
     }
+    return $col;
+}
 
-    // Store the details if the user is logged in
-    if($loggedIn){
-        $sql = 'INSERT into shopping_list (shopping_list_date, user_email) values ( ?, ? )';
+// Store the details if the user is logged in
+if($loggedIn){
+    $sql = 'INSERT into shopping_list (shopping_list_date, user_email) values ( ?, ? )';
+    // Prepare the statement
+    if($stmt = mysqli_prepare($link, $sql)){
+        // Bind variables to the prepared statement as parameters
+        if(mysqli_stmt_bind_param($stmt, "ss", $param_list_date, $param_email)){
+            // Set paramenter
+            $param_list_date = $list_date;
+            $param_email = $_SESSION['email'];
+            //Execute the statement
+            if(mysqli_stmt_execute($stmt)){
+                $last_id = mysqli_insert_id($link);
+                $list_id =$last_id;
+                // Close statement
+                mysqli_stmt_close($stmt);
+            }             
+        }        
+    }
+    $meal_count = 0;
+    foreach($shoppingListCollecion->allValues() as $recipe){
+        $mc = &$meal_count;
+        $numbers = array('one','two','three','four','five','six','seven');
+        $sql = 'INSERT into shopping_list_recipe (shopping_list_id, recipe_id, meal_number) values (?,?,?)';
         // Prepare the statement
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            if(mysqli_stmt_bind_param($stmt, "ss", $param_list_date, $param_email)){
+            if(mysqli_stmt_bind_param($stmt, "sss", $param_list_id, $param_recipe, $param_meal_num)){
                 // Set paramenter
-                $param_list_date = $list_date;
-                $param_email = $_SESSION['email'];
+                $param_list_id = $list_id;
+                $param_recipe =  $recipe->get_id();
+                $param_meal_num =$numbers[$mc];
                 //Execute the statement
                 if(mysqli_stmt_execute($stmt)){
                     $last_id = mysqli_insert_id($link);
-                    $list_id =$last_id;
                     // Close statement
                     mysqli_stmt_close($stmt);
                 }             
-            }        
+            }   
         }
-        foreach($shoppingListCollecion->allValues() as $recipe){
-            $sql = 'INSERT into shopping_list_recipe (shopping_list_id, recipe_id) values (?,?)';
-            // Prepare the statement
-            if($stmt = mysqli_prepare($link, $sql)){
-                // Bind variables to the prepared statement as parameters
-                if(mysqli_stmt_bind_param($stmt, "ss", $param_list_id, $param_recipe)){
-                    // Set paramenter
-                    $param_list_id = $list_id;
-                    $param_recipe =  $recipe->get_id();
-                    //Execute the statement
-                    if(mysqli_stmt_execute($stmt)){
-                        $last_id = mysqli_insert_id($link);
-                        // Close statement
-                        mysqli_stmt_close($stmt);
-                    }             
-                }   
-            }
-        }
-
-        // Close connection
-        mysqli_close($link);
+        $mc++;
     }
+
+    // Close connection
+    mysqli_close($link);
+}
 
 ?>
 
