@@ -2,11 +2,32 @@
 
 include "header.php"; 
 include "dbCred.php";
-
 $msg = "";
 
-if(isset($_POST["submit"])){
+function ingredientExists($link, $i_name) {
+    $sql3 = "SELECT * FROM ingredient WHERE userName = ? OR userEmail = ?;";
+    $stmt = mysqli_stmt_init($link);
+    
+    if (!mysqli_stmt_prepare($stmt, $sql3)){
+        header("location: ../signup.php?error=stmtFailed");
+        exit();
+    }
 
+    mysqli_stmt_bind_param($stmt, "s", $i_name);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if($row = mysqli_fetch_assoc($resultData)){
+        return $row;
+    }
+    else{
+        $result = false;
+        return $result;
+    }
+    mysqli_stmt_close($stmt);
+}
+
+if(isset($_POST["submit"])){
 //IMPORTNAT - This is only used for local debug, delete once we get it working on server  
 // define('DB_SERVER', 'localhost');
 // define('DB_USERNAME', 'root');
@@ -30,17 +51,40 @@ if(isset($_POST["submit"])){
     $recipeName = $_POST["recipeName"];
     $cookTime = $_POST["cookTime"];
     $recipeInstuction = $_POST["recipeInstuction"];
-    $recipeImage = $_POST["image"]["recipe_image"];
-    $target = "Images/".basename($_FILES["image"]["name"]);
-    
-    $sql = "INSERT INTO recipe (recipe_name, cook_time, recipe_instructions, recipe_image_url) VALUES ('$recipeName', '$cookTime', '$recipeInstuction', '$recipeImage');"; 
-    mysqli_query($link, $sql);
-    // if (move_upload_file($_FILES['tmp_name']['name'], $target)){
-    //     $msg = "File was uploaded successfully";
-    // }else{
-    //     $msg = "Problem occured with upload - Try again";
-    // }
 
+    //https://www.youtube.com/watch?v=JaRq73y5MJk
+    $file = $_FILES['file'];
+    $fileName = $_FILES['file']['name'];
+    $fileTmpName = $_FILES['file']['tmp_name'];
+    $fileSize = $_FILES['file']['size'];
+    $fileError = $_FILES['file']['error'];
+    $fileType = $_FILES['file']['type'];
+
+    $fileExt = explode('.', $fileName);
+    $fileActualExt = strtolower(end($fileExt));
+
+    $allowed = array('jpg', 'jpeg', 'png', 'pdf');
+
+    if (in_array($fileActualExt, $allowed)){
+        if($fileError === 0){
+            if ($fileSize < 500000){
+                // $fileNameNew = uniqid('', true).".".$fileActualExt;
+                $fileDestination = 'Images/'.$fileName;
+                move_uploaded_file('$fileTmpName', $fileDestination);
+            } else{
+                echo "Your file is to big";
+            }
+        } else {
+            echo "There was an error uploading your file";            
+        }
+    } else{
+        echo "You cannot upload files of this type";
+    }
+
+    echo $fileName;
+
+    $sql = "INSERT INTO recipe (recipe_name, cook_time, recipe_instructions, recipe_image_url) VALUES ('$recipeName', '$cookTime', '$recipeInstuction', '$fileName');"; 
+    mysqli_query($link, $sql);
     $recipe_id = mysqli_insert_id($link);
     echo $recipe_id;
 
@@ -57,8 +101,8 @@ if(isset($_POST["submit"])){
         // Prepare the statement
         $stmt = $link->prepare($sql2);
         // var_dump($stmt);
-        // Bind the parameters
-    
+        
+        // Bind the parameters    
         $stmt->bind_param('ssss', $p_recipe_id, $p_i_name, $p_i_unit, $p_i_qty);
         $p_recipe_id = $recipe_id;
         $p_i_name = $i_name;
@@ -74,26 +118,8 @@ if(isset($_POST["submit"])){
         echo $i_name."<br>";
         echo $sql2."<br>";
     }
-
-
-
-    // $sql = "INSERT INTO recipe (recipe_name, cook_time, recipe_instructions) VALUES (?, ?, ?);"; 
-    // // mysqli_query($link, $sql);
-    
-    // // Prepare the statement
-    // $stmt = $link->prepare($sql);
-    // // Bind the parameters
-    // $stmt->bind_param('sss', $recipeName, $cookTime, $recipeInstuction);
-    // //Execute the statement
-    // $stmt->execute();
-
-    echo "<br>You have entered a recipe into the database";   
-
+    echo "<br>You have entered a recipe into the database<br>";   
 }
-
-
-
-
 ?>
 <!-- TODO implement $_POST data in order to pull existing recipe details -->
 <!-- I added an auto increment to the id column (recipe and shopping list) on the database so we don't have to worry about creating a new ID for each added recipe-->
@@ -102,9 +128,9 @@ if(isset($_POST["submit"])){
 <br /><br />
 <section class="submitForm">
     <h3 id="submitTitle">Cookbook Recipe</h3><br />
-    <form action="addRecipe.php" method="post">  
+    <form action="addRecipe.php" method="post" enctype="multipart/form-data">  
         
-        <input type="file" id="recipe_image" name="recipe_image"><br>
+        <input type="file" id="recipe_image" name="file"><br>
 
         <label for="recipeName">Name of Recipe:</label><br>
         <input type="text" id="recipeName" name="recipeName"><br><br> <!-- recipe_name -->
@@ -120,12 +146,12 @@ if(isset($_POST["submit"])){
                     <th>Units:</th>
                     <th>Ingredient Name:</th>
                 </tr>
-                <tr>
-                    <td><input type='number' name='iQty[]' step='0.01'></td>
+                <!-- <tr> -->
+                    <!-- <td><input type='number' name='iQty[]' step='0.01'></td> -->
                     <!-- <td><input type='text' name='iUnit[]'></td>  -->
-                    <td><select name='iUnit[]' id='qty'><option value='Unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td>
-                    <td><input type='text' name='iName[]'></td>   
-                </tr>
+                    <!-- <td><select name='iUnit[]' id='qty'><option value='cup'>cup</option><option value='lb'>lb</option><option value='oz'>oz</option><option value='pinch'>pinch</option><option value='pt'>pt</option><option value='qt'>qt</option><option value='tbsp'>tbsp</option><option value='tsp'>Tsp</option><option value='whole'>whole</option></select></td> -->
+                    <!-- <td><input type='text' name='iName[]'></td>    -->
+                <!-- </tr> -->
             </thead>
             <tbody id="tbody"></tbody>
         </table><br>
@@ -148,7 +174,7 @@ if(isset($_POST["submit"])){
     function addItem(){
         var html = "<tr>";
             html += "<td><input type='number' step='0.01' name='iQty[]'></td>";
-            html += "<td><select name='iUnit[]' id='qty'><option value='qty'><option value='unit'>Unit</option><option value='cup'>Cup</option><option value='tbsp'>Tbsp</option><option value='tsp'>Tsp</option><option value='oz'>oz</option></select></td>";
+            html += "<td><select name='iUnit[]' id='qty'><option value='cup'>cup</option><option value='lb'>lb</option><option value='oz'>oz</option><option value='pinch'>pinch</option><option value='pt'>pt</option><option value='qt'>qt</option><option value='tbsp'>tbsp</option><option value='tsp'>Tsp</option><option value='whole'>whole</option></select></td>";
             html += "<td><input type='text' name='iName[]'></td>";
             html += "</tr>";
             document.getElementById("tbody").insertRow().innerHTML = html;
