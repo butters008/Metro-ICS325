@@ -84,7 +84,8 @@ if($isEdit){
                 $ingredient->set_name($iIngredientName);
                 $ingredient->set_measurement($iMeasurement);
                 $ingredient->set_qty($iQty);
-                $ingredients->addItem($ingredient, $iIngredientName);
+                $key=$ingredient->get_name().$ingredient->get_measurement().$ingredient->get_qty();
+                $ingredients->addItem($ingredient, $key);
             }
         }
         $stmt->close();
@@ -98,10 +99,12 @@ if($isEdit){
     $(document).ready(function () {
         $('#errorMessage').toggle(false)
         $('.img_upload').toggle(false)
+        $('#update').toggle(false)
         const actualBtn = document.getElementById('img');
         const fileChosen = document.getElementById('file-chosen');
         actualBtn.addEventListener('change', function(){
             fileChosen.textContent = this.files[0].name
+            $('#currentPicBtn').toggle(true)
         })
     $(document).on('click', '#ingredientTable .addRow', function () {
 
@@ -135,6 +138,14 @@ function validate(){
 
 function newPic(){
     $('.img_upload').toggle(true)
+    $('#update').toggle(false)
+    $('#currentPicBtn').toggle(true)
+}
+
+function keepPic(){
+    $('.img_upload').toggle(false)
+    $('#update').toggle(true)
+    $('#currentPicBtn').toggle(false)
 }
 
 </script>
@@ -143,7 +154,7 @@ function newPic(){
     <h3 id="submitTitle">Recipe Details</h3><br />
     <form id="upload" method="post" enctype="multipart/form-data">
             <center>
-            <input type= button value="New Picture" onclick="newPic();"/>
+            <input type=button value="New Picture" onclick="newPic();"/>            
             <br/>
             <?php
                 if($hasNewImg){
@@ -170,11 +181,9 @@ function newPic(){
             <input class="img_upload" type="submit" form="upload" value="Upload">
             <br/>
             <br/>
-            <label>Current Image: <?php echo $current?></label>;
-            </center>
-    </form>
-    <form id="update" action="processModifyRecipe.php" method="post">  
-        <?php
+            <label>Current Image: <?php echo $current?></label>
+            <br/>
+            <?php
             if($hasNewImg){
                 echo "<img src='Images/".$upload_file_name."'style='max-width: 200px; max-height: 200px;'><br><br>";
                 $image = $name;
@@ -185,6 +194,13 @@ function newPic(){
                     $image = $recipe->get_imageURL();
                 }
                 echo "<img src='Images/".$image."'style='max-width: 200px; max-height: 200px;'><br><br>";}?>
+            <br/>
+            <?php if($isEdit || $hasNewImg){
+                echo('<input type=button id="currentPicBtn" value="Use Current Pic" onclick="keepPic();"/>');
+                }?>
+            </center>
+    </form>
+    <form id="update" action="processModifyRecipe.php" method="post">  
         <input type="hidden" name="recipeID" value="<?php if($isEdit){echo($recipe->get_id());}?>"> 
         <input type="hidden" name="isEdit" value="<?php echo $isEdit;?>"> 
         <?php 
