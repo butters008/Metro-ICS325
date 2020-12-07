@@ -89,7 +89,7 @@ nav ul li a:hover {
 /* ------------------------------------------ */
 
 body{
-    background-color: rgb(59, 59, 59);
+    /* background-color: rgb(59, 59, 59); */
     margin-bottom: 20px;
 }
 header{
@@ -103,7 +103,7 @@ main{
     width: 90%;
     min-height: 70%;
     min-height: 500px; 
-    background-color: azure;
+    background-color: white;
     margin: auto;
     position: relative;
 }
