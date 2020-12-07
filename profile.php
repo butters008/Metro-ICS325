@@ -40,17 +40,16 @@ if($stmt = mysqli_prepare($link, $sql)){
     <div id="profile">
         <?php
         $email = $_SESSION["email"];
-        echo("<p>Email: ".$email."</p>");
-        echo('<a href="resetpassword.php">Reset Password</a>'); 
-        echo('<p>Past Shopping Lists:</p>');
+        echo("<h1>Email: ".$email."</h1>");
+        echo('<a href="resetpassword.php"><input type=button value = "Reset Password" /></a>'); 
+        echo('<h2>Past Shopping Lists:</h2>');
         echo('<ul id="pastList">');
         foreach ($dates as $id=>$date){
             $prettyDate = new DateTime($date);
-            echo("<li><a href=\"pastList.php?sli=".$id."\">".$prettyDate->format("m-d-Y h:i")."</a></li>");
+            echo("<li><a href=\"pastList.php?sli=".$id."\">".$prettyDate->format("D, M jS Y - g:i a")."</a></li>");
         }
         echo('</ul>');
-         echo('<a href="logout.php">Log Out</a>');
-        // We could add an option here to delete an account if we need to make that kind of call. Similar to the logout.php file
+         echo('<a href="logout.php"><input type=button value="Log Out" /></a>');
         ?>
     </div>
 </main>

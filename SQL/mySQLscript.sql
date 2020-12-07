@@ -5,7 +5,7 @@ recipe_id Int Primary key AUTO_INCREMENT,
 recipe_name varchar(25),
 cook_time Int,
 recipe_instructions text,
-recipe_image_url varchar(25),
+recipe_image_url varchar(100),
 ingredient_count Int
 );
 

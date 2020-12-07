@@ -1,3 +1,22 @@
+/* Header */
+header {
+    position: relative;
+    text-align: center;
+    color: white;
+    font-size: 48px;
+    text-shadow: -1px 1px 2px #000,
+				  1px 1px 2px #000,
+				  1px -1px 0 #000,
+				  -1px -1px 0 #000;
+  }
+header .header_text{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+}
+
 /* Navigation ------------------------------- */
 nav{
     width: 90%;
@@ -17,17 +36,17 @@ nav ul {
     text-align: center;
 }
   
-nav li {
+nav ul li {
     float: left;
     margin: auto;
     border-right:1px solid #bbb;
 }
   
-nav li:last-child {
+nav ul li:last-child {
     border-right: none;
 }
   
-nav li a {
+nav ul li a {
     display: block;
     color: white;
     text-align: center;
@@ -35,12 +54,22 @@ nav li a {
     text-decoration: none;
 }
   
-nav li a:hover:not(.active) {
+nav ul li a:hover:not(.active) {
     background-color: #111;
 }
   
-.active {
-    background-color: #4CAF50;
+nav ul li a:hover {
+    color: #4CAF50;
+}
+
+#loggedinIcon{
+    display: block;
+    max-width:25px;
+    max-height:25px;
+    width: auto;
+    height: auto;
+    margin-top: 50%;
+    margin-bottom: 50%;
 }
 
 #accountMenu{
@@ -80,6 +109,11 @@ main{
 }
 
 .error{
-    background-color:red;
+    padding: 0.5rem;
+    margin-top: 1rem;
+    border-width: 2px;
+    border-style: outset;
+    border-color: red;
     padding: 5px;}
+
 

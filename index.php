@@ -5,7 +5,17 @@ require_once "Collection.php";
 require_once "recipe.php";
 require_once "ingredient.php";
 ?>
-<main>
+<?php
+
+    if($loggedIn){
+        $loggedOut = "hidden";
+    } else {
+        $loggedOut = "visible";
+    }
+?>
+<main>    
+    <h3 style="text-align: center;">Supper shopping made simple.</h3>
+    <h4 style="text-align: center;">Pick out a few recipes and we'll let you know what you need to make them.</h4>
     <br /><br />
     <div>
         <form method="POST" action="list.php">
@@ -40,10 +50,10 @@ require_once "ingredient.php";
             </table><br />
             <center>
                 <input type="submit" id="list_btn" value="Get Shopping List">
+                <h4 id="login_prompt" style="visibility: <?php echo($loggedOut);?>">Want to save your list? <a href="login.php">Login to your account first</a></h4>
             </center>
         </form>
     </div>
-
 
 
     <div class="menu">
@@ -196,7 +206,7 @@ require_once "ingredient.php";
                                             $image = 'emptyIcon.png';
                                         }
                                         echo ("<img class=\"foodIcon,recipeImg\" id=\"" . $recipe->id . "\" src=\"Images/" . $image . "\" alt=\"" . $recipe->name . "\" onclick=\"updateRecipe(this.id)\">");
-                                        echo ("<script>storeInstruction(\"" . $recipe->id . "\",\"" . $instructions . "\")</script>");
+                                        echo ("<script>storeInstruction(" . $recipe->id . ",\"" . $instructions . "\")</script>");
                                     }
                                 }
                                 $extrasLeft--;

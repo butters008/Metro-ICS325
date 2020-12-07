@@ -47,6 +47,7 @@ require_once "Collection.php";
 
     if(isset($_POST['instruction'])){
         $instructions = htmlspecialchars($_POST['instruction']);
+        $instructions = trim(preg_replace('/\s\s+/', ' ', $instructions));
     }
 
     if(sizeof($iName)==sizeof($iMeasurement) && sizeof($iName)==sizeof($iQty)){

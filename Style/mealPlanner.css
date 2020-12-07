@@ -69,7 +69,8 @@
 
 #howToMakeBox{
     border: 15px solid #333;
-    background-color: aqua;
+    background-color:rgb(55, 109, 160);
+    color: white;
     height: 100%;
     width: 35%;
     float: right;
@@ -164,4 +165,48 @@
       flex: 100%;
       max-width: 100%;
     }
+  }
+
+  /* Modify recipe image upload buttons */
+  .img_upload {
+    background-color: rgb(20, 78, 37);
+    color: white;
+    padding: 0.5rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    border-width: 0px;
+    border-style: outset;
+    border-color: black;
+  }
+
+  .addRow{
+    background-color: rgb(20, 78, 37);
+    color: white;
+    cursor: pointer;
+    border-width: 0px;
+    border-style: outset;
+    border-color: black;
+  }
+
+  .removeRow{
+    background-color: rgb(20, 78, 37);
+    color: white;
+    cursor: pointer;
+    border-width: 0px;
+    border-style: outset;
+    border-color: black;
+  }
+  input[type=submit], input[type=button], input[type=reset]{
+    background-color:rgb(20, 78, 37);
+    color: white;
+    padding: 0.5rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    border-width: 0px;
+    border-style: outset;
+    border-color: black;
+  }
+
+  #pastList li {
+    font-size: 18px;
   }

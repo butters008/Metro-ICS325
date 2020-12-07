@@ -97,6 +97,12 @@ if($isEdit){
 <script>
     $(document).ready(function () {
         $('#errorMessage').toggle(false)
+        $('.img_upload').toggle(false)
+        const actualBtn = document.getElementById('img');
+        const fileChosen = document.getElementById('file-chosen');
+        actualBtn.addEventListener('change', function(){
+            fileChosen.textContent = this.files[0].name
+        })
     $(document).on('click', '#ingredientTable .addRow', function () {
 
         var row = $(this).closest('tr');
@@ -127,31 +133,44 @@ function validate(){
     return form.find(".error").length==0
 }
 
+function newPic(){
+    $('.img_upload').toggle(true)
+}
+
 </script>
 <br /><br />
 <section class="submitForm">
-    <h3 id="submitTitle">Cookbook Recipe</h3><br />
+    <h3 id="submitTitle">Recipe Details</h3><br />
     <form id="upload" method="post" enctype="multipart/form-data">
             <center>
-            <label for="img">Select image:</label>
+            <input type= button value="New Picture" onclick="newPic();"/>
+            <br/>
             <?php
                 if($hasNewImg){
-                    echo '<p>Current Image: '.$upload_file_name.'</p>';
-                    echo  '<input type="file" id="img" name="img" accept="image/*" value="'.$upload_file_name.'">';
+                    echo  '<input type="file" id="img" class="img_upload" name="img" accept="image/*" value="'.$upload_file_name.'" style="visibility:hidden">';
+                    echo '<label class="img_upload" for="img">Chose Image</label>';
+                    $current= $upload_file_name;
                 } else if ($isEdit){
                     if($recipe->get_imageURL()==null || $recipe->get_imageURL() ==""){
                         $image = "emptyIcon.png";
                     } else {
                         $image = $recipe->get_imageURL();
                     }
-                    echo '<p>Current Image: '.$image.'</p>';
-                    echo  '<input type="file" id="img" name="img" accept="image/*" value="'.$recipe->get_imageURL().'">';
+                    echo  '<input type="file" class="img_upload" id="img" name="img" accept="image/*" value="'.$recipe->get_imageURL().'"  style="visibility:hidden">';
+                    echo '<label class="img_upload" for="img">Chose Image</label>';
+                    $current = $image;
                 } else {
-                    echo '<p>Current Image: None</p>';
-                    echo '<input type="file" id="img" name="img" accept="image/*">';
+                    echo '<input type="file" class="img_upload" id="img" name="img" accept="image/*"  style="visibility:hidden">';
+                    echo '<label class="img_upload" for="img">Chose Image</label>';
+                    $current = "None";
                 }
             ?>
-            <input type="submit" form="upload" value="Upload">
+            <span id="file-chosen" class="img_upload">No image chosen</span>
+            <br/>
+            <input class="img_upload" type="submit" form="upload" value="Upload">
+            <br/>
+            <br/>
+            <label>Current Image: <?php echo $current?></label>;
             </center>
     </form>
     <form id="update" action="processModifyRecipe.php" method="post">  
@@ -180,18 +199,19 @@ function validate(){
             }
         ?>  
         <input type="hidden" name="imgURL" value="<?php echo $url;?>">
+        <br/>
         <label for="recipeName">Name of Recipe:</label><br>
         <input type="text" id="recipeName" name="recipeName" value="<?php if($isEdit){echo($recipe->get_name());}?>" required><br><br> <!-- recipe_name -->
 
         <label for="cookTime">Cooking Time for Recipe:</label><br>
         <input type="text" id="cookTime" name="cookTime" value="<?php if($isEdit){echo($recipe->get_cookTime());}?>" required><br><br> <!-- cook_time -->
 
-        <label for="ingredientTable">Ingredients for Recipe:</label><br><br>
+        <label for="ingredientTable">Ingredients for Recipe:</label><br>
         <table id="ingredientTable">
             <thead>
                 <tr>
-                    <th>Qty: </th>
-                    <th>Measurement:</th>
+                    <th>How many? </th>
+                    <th>Units:</th>
                     <th>Ingredient Name:</th>
                 </tr>
                 </thead>
@@ -202,7 +222,7 @@ function validate(){
                         foreach ($ingArray as $i){
                             echo (
                             "<tr><td><input type='number' step='0.01' min=0 name='iQty[]' value=" . $i->get_qty() . "></td>
-                            <td><select name='iMeasurement[]' id='qty'><option value='" . strtolower($i->get_measurement()) . "'>" . $i->get_measurement() . "</option><option value='qty'><option value='whole'>whole</option><option value='cup'>cup</option><option value='tbsp'>tbsp</option><option value='tsp'>tsp</option><option value='oz'>oz</option></select></td>
+                            <td><select name='iMeasurement[]' id='qty'><option value='" . strtolower($i->get_measurement()) . "'>" . $i->get_measurement() . "</option><option value='qty'><option value='whole'>whole</option><option value='lb'>lb</option><option value='cup'>cup</option><option value='pt'>pt</option><option value='qt'>qt</option><option value='tbsp'>tbsp</option><option value='tsp'>tsp</option><option value='oz'>oz</option><option value='pinch'>pinch</option></select></td>
                             <td><input type='text' name='iName[]' value=". $i->get_name() ." ></td>
                             <td><input type='button' name='addRow' class='addRow' value='+' /></td>
                             <td><input type='button' name='removeRow' class='removeRow' value='-' /></td>");
@@ -213,13 +233,14 @@ function validate(){
                     <br>
                     <tr>
                         <td><input type='number' step='0.01' min=0 name='iQty[]'></td>
-                        <td><select name='iMeasurement[]' id='qty'><option value='qty'><option value='whole'>whole</option><option value='cup'>cup</option><option value='tbsp'>tbsp</option><option value='tsp'>tsp</option><option value='oz'>oz</option></select></td>
+                        <td><select name='iMeasurement[]' id='qty'><option value='qty'><option value='whole'>whole</option><option value='lb'>lb</option><option value='cup'>cup</option><option value='pt'>pt</option><option value='qt'>qt</option><option value='tbsp'>tbsp</option><option value='tsp'>tsp</option><option value='oz'>oz</option><option value='pinch'>pinch</option></select></td>
                         <td><input type='text' name='iName[]'></td>
                         <td><input type='button' name="addRow" class="addRow" value='+' /></td>
                         <td><input type='button' name="removeRow" class="removeRow" value='-' /></td>
                     </tr>
                 </tbody>
-        </table><br>
+        </table>
+        <br>
         <div id="errorMessage">
             <h3 >Please fill out each row or remove it.</h3>
         </div>
@@ -227,7 +248,7 @@ function validate(){
         <!-- recipe_instructions -->
         <label for="instruction"><strong>Instructions for Recipe:</strong></label><br/><br/>
         <textarea id="instruction" name="instruction" rows="15" cols="50" required><?php if($isEdit){echo $recipe->get_instruction();}?></textarea><br/><br/>  
-        <p><input form="update" type="submit" value="submit" name="submit" onclick="return validate()"></p><br/><br/>
+        <p><input form="update" type="submit" value="Update Recipe" name="submit" onclick="return validate()"></p><br/><br/>
     </form>
     
 </section>

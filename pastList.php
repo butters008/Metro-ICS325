@@ -90,6 +90,7 @@ $prettyDate = $list_date->format("m-d-Y h:i");
     
 ?>
 <main>
+    <div id="list">
     <h2>Shopping List:</h2>
     <p>Originally Generated: <?php echo($prettyDate)?></p>
     <?php
@@ -98,7 +99,8 @@ $prettyDate = $list_date->format("m-d-Y h:i");
             echo($recipe->displayIngredients());
         }
     ?>
-    
+    </div>
+    <input type="button" onclick="printList();" value= "Print">
 </main>
 
 <?php include "footer.php"; ?>

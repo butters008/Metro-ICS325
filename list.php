@@ -11,8 +11,8 @@ session_start();
 
 // ****Variables
 $datetime = new DateTime('now', new DateTimeZone('CST'));
-$list_date = $datetime->format("Y-m-d h:i");
-$display_date = date("m-d-Y");
+$list_date = $datetime->format("Y-m-d H:i");
+$display_date = $datetime->format("D, M jS Y - g:i a");
 $ids = getRecipeIDs();
 $loggedIn = isset($_SESSION["loggedin"]) && isset($_SESSION["email"]); 
 $recipeCollection = new Collection;
@@ -171,13 +171,16 @@ if($loggedIn){
 ?>
 
 <main>
+    <div id="list">
     <h2>Shopping List:</h2>
-    <p>Generated <?php echo($list_date)?></p>
+    <p>Generated <?php echo($display_date)?></p>
     <?php
         foreach($shoppingListCollecion->allValues() as $recipe){
             echo('<h2>'.$recipe->name.'</h2>');
             echo($recipe->displayIngredients());
         }
+        echo('</div>');
+        echo('<input type="button" onclick="printList();" value= "Print">');
     ?>
     
 </main>
