@@ -61,8 +61,16 @@ function search(term){
     var searchBox = document.getElementById('search');
     if(searchBox.value.length > 0){
         document.cookie ="search="+term;
+    } else {
+        eraseCookie('search');
     }
+
     $('#gallery').load('index.php #gallery');
+}
+
+function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999;';  
+    $('')
 }
 
 function printList(){
@@ -75,4 +83,3 @@ function printList(){
     a.document.close(); 
     a.print(); 
 }
-

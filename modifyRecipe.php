@@ -239,7 +239,7 @@ function keepPic(){
                             echo (
                             "<tr><td><input type='number' step='0.01' min=0 name='iQty[]' value=" . $i->get_qty() . "></td>
                             <td><select name='iMeasurement[]' id='qty'><option value='" . strtolower($i->get_measurement()) . "'>" . $i->get_measurement() . "</option><option value='qty'><option value='whole'>whole</option><option value='lb'>lb</option><option value='cup'>cup</option><option value='pt'>pt</option><option value='qt'>qt</option><option value='tbsp'>tbsp</option><option value='tsp'>tsp</option><option value='oz'>oz</option><option value='pinch'>pinch</option></select></td>
-                            <td><input type='text' name='iName[]' value=". $i->get_name() ." ></td>
+                            <td><input type='text' name='iName[]' value='". $i->get_name() ."' ></td>
                             <td><input type='button' name='addRow' class='addRow' value='+' /></td>
                             <td><input type='button' name='removeRow' class='removeRow' value='-' /></td>");
                                

@@ -210,31 +210,24 @@ require_once "ingredient.php";
                                     }
                                 }
                                 $extrasLeft--;
+                        
                                 echo ('</div>');
 
                             }
+                            echo('<script>eraseCookie(\'search\');</script>');
                         }
                         echo('<div id="recs">');
                     }   
                                    
                 }
-            if ($stmt = mysqli_prepare($link, $sql)){
-                mysqli_stmt_bind_param($stmt, "i", $param_ID);
-                $param_ID = $recipeID;
-                if(!mysqli_stmt_execute($stmt)){
-                    array_push($errors, "Problem removing old ingredients.");
-                }
-            } else {
-                array_push($errors, "Problem connecting to database to remove old ingredients.");
-            }
-            mysqli_stmt_close($stmt);
-        
+                
                 ?>
             </div>
             <input type="hidden" id="current" name="current" value="">
         </form>
-
-
+        <br/>
+        <br/>
+        <br/>
 </main>
 
 <?php include "footer.php"; ?>

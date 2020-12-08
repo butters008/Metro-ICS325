@@ -131,6 +131,8 @@
     padding: 0 4px;
     overflow-x: hidden; 
     overflow-y: auto; 
+    padding-bottom: 50px;
+    margin-bottom: 50px;
     width: 60%; 
   }
   

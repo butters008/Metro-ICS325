@@ -8,6 +8,7 @@
         $profileImg ='<li style="float:right;"><img src="Images/loggedout.png" id="loggedinIcon" alt="Log In" /></li>';
         $profileLink='Log In';
     }
+    $_COOKIE['search'] = null;
 echo"
 <!DOCTYPE html>
 <html>
